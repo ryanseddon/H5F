@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	
+	<link rel="stylesheet" type="text/css" href="_styles.css" media="screen" />
+	
+	<script type="text/javascript" src="_h5f.js"></script>
+	
+	<title>Validate those forms with CSS3 Basic UI module pseudo-classes and HTML5 Form attributes</title>
+
+</head>
+<body>
+	
+	<form id="signup">
+		<h1>Sign up now!</h1>
+		
+		<h2>Fields marked (*) are required</h2>
+		
+		<fieldset>
+			<legend>Your details</legend>
+			
+			<ol>
+				<li>
+					<label for="fullname">Name *</label> 
+					<input type="text" id="fullname" name="fullname" placeholder="Full name" required aria-required="true" />
+				</li>
+				<li>
+					<label for="email">Email *</label> 
+					<input type="email" id="email" name="email" placeholder="e.g. ryan@example.net" title="Please enter a valid email" required aria-required="true" />
+					<p class="validation01">
+						<span class="invalid">Please enter a valid email address e.g. ryan@example.com</span>
+						<span class="valid">Thank you for entering a valid email</span>
+					</p>
+				</li>
+				<li>
+					<label for="tel">Phone *</label> 
+					<input type="tel" id="tel" name="tel" pattern="\d{10}" placeholder="Please enter a ten digit phone number" required aria-required="true" />
+					<p class="validation01">
+						<span class="invalid">No spaces or brackets e.g. 0390001234</span>
+						<span class="valid">That's what we wanted!</span>
+					</p>
+				</li>
+			</ol>
+		</fieldset>
+		
+		<fieldset>
+			<legend>Delivery address</legend>
+			<ol>
+				<li>
+					<label for="address">Address *</label>
+					<input id="address" name="address" type="text" required aria-required="true" />
+				</li>
+				<li>
+					<label for="suburb">Suburb *</label>
+					<input id="suburb" name="suburb" type="text" required aria-required="true" />
+				</li>
+				<li>
+					<label for="postcode">Post code *</label>
+					<input id="postcode" name="postcode" type="number" min="1001" max="8000" required maxlength="4" />
+					<p class="validation01">
+						<span class="invalid">Your postcode is out of range between 1001 - 8000</span>
+						<span class="valid">Thank you your postcode is in the correct range</span>
+					</p>
+				</li>
+				<li>
+					<label for="state">State</label>
+					<select name="state" id="state">
+						<option>ACT</option>
+						<option>NSW</option>
+						<option>NT</option>
+						<option>QLD</option>
+						<option>SA</option>
+						<option>TAS</option>
+						<option selected>VIC</option>
+						<option>WA</option>
+					</select>
+				</li>
+			</ol>
+		</fieldset>
+
+		<fieldset>
+			<legend>Membership information</legend>
+			<ol>		
+				<li>
+					<label for="username">Username *</label>
+					<input id="username" name="username" type="text" pattern="\w{4,}" placeholder="Atleast 4 alphanumeric characters" required aria-required="true" />
+				</li>
+				<li>
+					<label for="password">Password *</label>
+					<input id="password" name="password" type="password" title="Minimum 8 characters, one number, one uppercase and one lowercase letter" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*" required aria-required="true" /> 
+					<p class="validation01">
+						<span class="invalid">Minimum 8 characters, one number, one uppercase letter and one lowercase letter</span>
+						<span class="valid">Your password meets our requirements, thank you.</span>
+					</p>
+				</li>
+				<li>
+					<label for="url">Website *</label> 
+					<input type="url" name="url" id="url" required aria-required="true" />
+				</li>
+			</ol>
+		</fieldset>
+		
+		<input type="submit" value="Sign up" />
+
+	</form>
+
+	<!-- Google analytics 
+	<script type="text/javascript">
+		var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+		document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+		var pageTracker = _gat._getTracker("UA-4638292-1");
+		pageTracker._initData();
+		pageTracker._trackPageview();
+	</script>-->
+	
+</body>
+</html>
