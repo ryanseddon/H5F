@@ -8,6 +8,23 @@
 	<link rel="stylesheet" type="text/css" href="_styles.css" media="screen" />
 	
 	<script type="text/javascript" src="../h5f.js"></script>
+	<script type="text/javascript">
+		H5F.listen(window,"load",function () {
+			/*
+				Accepts HTMLFormElement, HTMLCollection of HTMLFormElements, or Array of HTMLFormElements.
+				Optional object of options: validClass, invalidClass, requiredClass
+				
+				e.g. 
+				
+				H5F.setup([d.getElementById("signup"),d.getElementById("anotherform")], {
+					validClass: "valid",
+					invalidClass: "invalid",
+					requiredClass: "required"
+				});
+			*/
+			H5F.setup(document.getElementById("signup"));
+		},false);
+	</script>
 	
 	<title>Validate those forms with CSS3 Basic UI module pseudo-classes and HTML5 Form attributes</title>
 

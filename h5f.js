@@ -20,10 +20,24 @@ var H5F = H5F || {};
 	var field = document.createElement("input"),
 		emailPatt = new RegExp("([a-z0-9_.-]+)@([0-9a-z.-]+).([a-z.]{2,6})","i"), 
 		urlPatt = new RegExp("^http:\/\/","i"),
-		pattern, curEvt;
+		pattern, curEvt, args;
 	
-	H5F.setup = function(form) {
+	H5F.setup = function(form,settings) {
 		var isCollection = !form.nodeType || false;
+		
+		var opts = {
+			validClass : "valid",
+			invalidClass : "error",
+			requiredClass : "required"
+        }
+
+        if(typeof settings === "object") {
+			for (var i in opts) {
+				if(typeof settings[i] === "undefined") settings[i] = opts[i];
+			}
+		}
+		
+		args = settings || opts;
 		
 		if(isCollection) {
 			for(var i=0,len=form.length;i<len;i++) {
@@ -90,14 +104,12 @@ var H5F = H5F || {};
 		H5F.validity(el);
 		
 		if(el.validity.valid) {
-			el.className = "valid";
-			el.setAttribute("aria-invalid", false);
+			el.className = args.validClass;
 		} else if(!events.test(curEvt)) {
 			if(el.validity.valueMissing) {
-				el.className = "required";
+				el.className = args.requiredClass;
 			} else {
-				el.className = "error";
-				el.setAttribute("aria-invalid", true);
+				el.className = args.invalidClass;
 			}
 		} else if(el.validity.valueMissing) {
 			el.className = "";
@@ -241,21 +253,5 @@ var H5F = H5F || {};
 		el = null;
 		return isSupported;
 	};
-	
-	H5F.listen(window,"load",function () {
-		/*
-			Accepts HTMLFormElement, HTMLCollection of HTMLFormElements, or Array of HTMLFormElements.
-			Optional object of options: validClass, invalidClass, requiredClass
-			
-			e.g. 
-			
-			H5F.setup([d.getElementById("signup"),d.getElementById("anotherform")], {
-				validClass: "valid",
-				invalidClass: "invalid",
-				requiredClass: "required"
-			});
-		*/
-		H5F.setup(d.getElementById("signup"));
-	},false);
 
 })(document);
