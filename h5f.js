@@ -1,15 +1,10 @@
 /*
- * Notes:
- * input:    pattern, placeholder, min, max, step, required
- * textarea: placeholder, required
- * select:   required
- *	
  * HTML5 Forms Chapter JavaScript Library
- * http://thecssninja.com/javascript/H5F-library
+ * http://thecssninja.com/javascript/H5F
  *
  * Copyright (c) 2010 Ryan Seddon - http://thecssninja.com/
  * Dual-licensed under the BSD and MIT licenses.
- * http://thecssninja.com/H5F-library/license/
+ * http://thecssninja.com/H5F/license.txt
  *
  */
 
