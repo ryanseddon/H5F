@@ -12,7 +12,7 @@ var H5F = H5F || {};
 
 (function(d){
 	
-	var field = document.createElement("input"),
+	var field = d.createElement("input"),
 		emailPatt = new RegExp("([a-z0-9_.-]+)@([0-9a-z.-]+).([a-z.]{2,6})","i"), 
 		urlPatt = new RegExp("^http:\/\/","i"),
 		pattern, curEvt, args;
@@ -238,7 +238,7 @@ var H5F = H5F || {};
 		return !!((reFeaturedMethod.test(t) && o[m]) || t == 'unknown');
 	};
 	H5F.isCVAEventSupported = function (eventName) {
-		var el = document.createElement('input');
+		var el = d.createElement('input');
 		eventName = 'on' + eventName;
 		var isSupported = (eventName in el);
 		if (!isSupported) {
