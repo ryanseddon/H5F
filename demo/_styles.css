@@ -70,44 +70,8 @@ h2 { font-size: 14px; margin: 0 0 12px; }
 
 #signup input::-webkit-input-placeholder,
 #signup input:-moz-placeholder {
-	color: #A6A6A6;
+	color: red;
 }
-
-#signup .validation01
-{ 
-	background: red;
-	color: #fff;
-	display: none;
-	font-size: 12px;
-	padding: 3px;
-	position: absolute;
-	right: -160px;
-	text-align: center;
-	top: 0;
-	width: 150px;
-	
-	-moz-box-shadow: 0px 0px 4px #ffffff;
-	-webkit-box-shadow: 0px 0px 4px #ffffff;
-    box-shadow: 0px 0px 4px #ffffff;
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-}
-#signup input:focus + .validation01 							{ display: block; }
-
-#signup input:focus:required:valid + .validation01,
-#signup input.valid:focus + .validation01					{ background: green; }
-
-#signup input:focus:required:valid + .validation01 .invalid,
-#signup input.valid:focus + .validation01 .invalid			{ display: none; }
-
-#signup input:focus:required:valid + .validation01 .valid,
-#signup input.valid:focus + .validation01 .valid				{ display: block; }
-
-#signup input:focus:required:invalid + .validation01 .valid,
-#signup input.error:focus + .validation01 .valid,
-#signup input.required:focus + .validation01 .valid,
-#signup input:focus + .validation01 .valid					{ display: none; }
 
 #signup fieldset input:required:valid
 { 
@@ -146,9 +110,4 @@ h2 { font-size: 14px; margin: 0 0 12px; }
 { 
 	background-color: #fff;
 	background-position: 379px -61px;
-}
-
-#signup input.error::-webkit-input-placeholder,
-#signup inputerror :-moz-placeholder {
-	color: #fff;
 }

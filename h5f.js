@@ -141,7 +141,7 @@ var H5F = H5F || {};
 	
 	H5F.support = function() {
 		// Check for native support
-		return (H5F.isCVAEventSupported("invalid") && H5F.isHostMethod(field,"validity") && H5F.isHostMethod(field,"checkValidity"));
+		return (H5F.isHostMethod(field,"validity") && H5F.isHostMethod(field,"checkValidity"));
 	};
 
 	// Create helper methods if browser doesn't support new methods
@@ -236,17 +236,6 @@ var H5F = H5F || {};
 	H5F.isHostMethod = function(o, m) {
 		var t = typeof o[m], reFeaturedMethod = new RegExp('^function|object$', 'i');
 		return !!((reFeaturedMethod.test(t) && o[m]) || t == 'unknown');
-	};
-	H5F.isCVAEventSupported = function (eventName) {
-		var el = d.createElement('input');
-		eventName = 'on' + eventName;
-		var isSupported = (eventName in el);
-		if (!isSupported) {
-			el.setAttribute(eventName, 'return;');
-			isSupported = typeof el[eventName] == 'function';
-		}
-		el = null;
-		return isSupported;
 	};
 
 })(document);
