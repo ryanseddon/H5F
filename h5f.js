@@ -15,7 +15,7 @@ var H5F = H5F || {};
 	var field = d.createElement("input"),
 		emailPatt = new RegExp("([a-z0-9_.-]+)@([0-9a-z.-]+).([a-z.]{2,6})","i"), 
 		urlPatt = new RegExp("^http:\/\/","i"),
-		pattern, curEvt, args;
+		usrPatt, curEvt, args;
 	
 	H5F.setup = function(form,settings) {
 		var isCollection = !form.nodeType || false;
@@ -24,19 +24,19 @@ var H5F = H5F || {};
 			validClass : "valid",
 			invalidClass : "error",
 			requiredClass : "required"
-        }
+        };
 
         if(typeof settings === "object") {
 			for (var i in opts) {
-				if(typeof settings[i] === "undefined") settings[i] = opts[i];
+				if(typeof settings[i] === "undefined") { settings[i] = opts[i]; }
 			}
 		}
 		
 		args = settings || opts;
 		
 		if(isCollection) {
-			for(var i=0,len=form.length;i<len;i++) {
-				H5F.validation(form[i]);
+			for(var k=0,len=form.length;k<len;k++) {
+				H5F.validation(form[k]);
 			}
 		} else {
 			H5F.validation(form);
@@ -52,51 +52,51 @@ var H5F = H5F || {};
 		H5F.listen(form,"blur",H5F.checkField,true);
 		H5F.listen(form,"input",H5F.checkField,true);
 		H5F.listen(form,"focus",H5F.checkField,true);
-		H5F.listen(form,"submit",function(e,f){H5F.checkValidity(e,form);},false);
 		
-		form.checkValidity = function(e,f) { H5F.checkValidity("",form); };
-		
-		while(flen--) {
-			isRequired = !!(f[flen].attributes["required"]);
-			// Firefox includes fieldsets inside elements nodelist so we filter it out.
-			if(f[flen].nodeName !== "FIELDSET" && isRequired) {
-				H5F.validity(f[flen]); // Add validity object to field
+		if(!H5F.support()) { 
+			form.checkValidity = function(e,f) { H5F.checkValidity("",form); };
+			
+			while(flen--) {
+				isRequired = !!(f[flen].attributes["required"]);
+				// Firefox includes fieldsets inside elements nodelist so we filter it out.
+				if(f[flen].nodeName !== "FIELDSET" && isRequired) {
+					H5F.validity(f[flen]); // Add validity object to field
+				}
 			}
 		}
 	};
 	H5F.validity = function(el) {
-		if(!H5F.support()) {
-			var elem = el,
-				missing = H5F.valueMissing(elem),
-				type = elem.getAttribute("type"),
-				pattern = elem.getAttribute("pattern"),
-				placeholder = elem.getAttribute("placeholder"),
-				isType = /^(email|url|password)$/i,
-				fType = ((isType.test(type)) ? type : ((pattern) ? pattern : false)),
-				patt = H5F.pattern(elem,fType),
-				step = H5F.range(elem,"step"),
-				min = H5F.range(elem,"min"),
-				max = H5F.range(elem,"max");
-			
-			elem.validity = {
-				patternMismatch: patt,
-				rangeOverflow: max,
-				rangeUnderflow: min,
-				stepMismatch: step,
-				valid: (!missing && !patt && !step && !min && !max),
-				valueMissing: missing
-			};
-			
-			if(placeholder && curEvt !== "input") { H5F.placeholder(elem); }
-			elem.checkValidity = function(e,el) { H5F.checkValidity(e,elem); };
-		}
+		var elem = el,
+			missing = H5F.valueMissing(elem),
+			type = elem.getAttribute("type"),
+			pattern = elem.getAttribute("pattern"),
+			placeholder = elem.getAttribute("placeholder"),
+			isType = /^(email|url|password)$/i,
+			fType = ((isType.test(type)) ? type : ((pattern) ? pattern : false)),
+			patt = H5F.pattern(elem,fType),
+			step = H5F.range(elem,"step"),
+			min = H5F.range(elem,"min"),
+			max = H5F.range(elem,"max");
+		
+		// Unlike the spec these aren't readonly, getter & setters in IE7 and down aren't available
+		elem.validity = {
+			patternMismatch: patt,
+			rangeOverflow: max,
+			rangeUnderflow: min,
+			stepMismatch: step,
+			valid: (!missing && !patt && !step && !min && !max),
+			valueMissing: missing
+		};
+		
+		if(placeholder && curEvt !== "input") { H5F.placeholder(elem); }
+		elem.checkValidity = function(e,el) { H5F.checkValidity(e,elem); };
 	};
 	H5F.checkField = function (e) {
 		var el = H5F.getTarget(e) || e, // checkValidity method passes element not event
 			events = /^(input|focusin|focus)$/i;
 		
 		curEvt = e.type;
-		H5F.validity(el);
+		if(!H5F.support()) { H5F.validity(el); }
 		
 		if(el.validity.valid) {
 			el.className = args.validClass;
@@ -144,7 +144,7 @@ var H5F = H5F || {};
 		return (H5F.isHostMethod(field,"validity") && H5F.isHostMethod(field,"checkValidity"));
 	};
 
-	// Create helper methods if browser doesn't support new methods
+	// Create helper methods to emulate attributes in older browsers
 	H5F.pattern = function(el, type) {
 		if(type === "email") {
 			return !emailPatt.test(el.value);
@@ -153,13 +153,9 @@ var H5F = H5F || {};
 		} else if(!type || type === "password") { // Password can't be evalutated.
 			return false;
 		} else {
-			pattern = new RegExp(type);
-			return !pattern.test(el.value);
+			usrPatt = new RegExp(type);
+			return !usrPatt.test(el.value);
 		}
-	};
-	H5F.valueMissing = function(el) {
-		var placeholder = el.getAttribute("placeholder");
-		return !!(el.value === "" || el.value === placeholder);
 	};
 	H5F.placeholder = function(el) {
 		var placeholder = el.getAttribute("placeholder"),
@@ -198,9 +194,13 @@ var H5F = H5F || {};
 		}
 	};
 	H5F.required = function(el) {
-		var required = el.getAttribute("required");
+		var required = !!(el.attributes["required"]);
 		
-		return (required === "" || required === "required") ? H5F.valueMissing(el) : false;
+		return (required) ? H5F.valueMissing(el) : false;
+	};
+	H5F.valueMissing = function(el) {
+		var placeholder = el.getAttribute("placeholder");
+		return !!(el.value === "" || el.value === placeholder);
 	};
 	
 	/* Util methods */

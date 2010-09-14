@@ -70,31 +70,10 @@ h2 { font-size: 14px; margin: 0 0 12px; }
 
 #signup input::-webkit-input-placeholder,
 #signup input:-moz-placeholder {
-	color: red;
-}
-
-#signup fieldset input:required:valid
-{ 
-	background-color: #fff;
-	background-position: 379px -61px;
+	color: #a9a9a9;
 }
 
 /* Enhanced error styling */
-#errors {
-	background: red;
-	display: none;
-	margin: 0 0 12px;
-	padding: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
-	border-radius: 10px;
-}
-	#errors li
-	{
-		font-size: 12px;
-		margin: 0 0 5px 20px;
-	}
-
 #signup input.error
 {
 	background-color: pink; 
@@ -106,7 +85,8 @@ h2 { font-size: 14px; margin: 0 0 12px; }
 	background-color: #fff; 
 	background-position: 379px -29px;
 }
-#signup input.valid 
+#signup input.valid,
+#signup fieldset input:required:valid
 { 
 	background-color: #fff;
 	background-position: 379px -61px;
