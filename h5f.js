@@ -99,15 +99,16 @@ var H5F = H5F || {};
 		if(!H5F.support()) { H5F.validity(el); }
 		
 		if(el.validity.valid) {
-			el.className = args.validClass;
+			H5F.addClass(el,args.validClass);
 		} else if(!events.test(curEvt)) {
 			if(el.validity.valueMissing) {
-				el.className = args.requiredClass;
+				H5F.addClass(el,args.requiredClass);
 			} else {
-				el.className = args.invalidClass;
+				H5F.addClass(el,args.invalidClass);
 			}
 		} else if(el.validity.valueMissing) {
-			el.className = "";
+			H5F.removeClass(el,args.requiredClass);
+			H5F.removeClass(el,args.invalidClass);
 		}
 	};
 	H5F.checkValidity = function (e,el) {
@@ -232,6 +233,29 @@ var H5F = H5F || {};
 	H5F.getTarget = function (evt) {
 		evt = evt || window.event;
 	    return evt.target || evt.srcElement;
+	};
+	H5F.addClass = function (e,c) {
+		var re;
+        if (!e.className) {
+			e.className = c;
+        }
+        else {
+	        re = new RegExp('(^|\\s)' + c + '(\\s|$)');
+			if (!re.test(e.className)) { e.className += ' ' + c; }
+        }
+	};
+	H5F.removeClass = function (e,c) {
+		var re, m;
+		if (e.className) {
+			if (e.className == c) {
+				e.className = '';
+			}
+			else {		
+				re = new RegExp('(^|\\s)' + c + '(\\s|$)');
+				m = e.className.match(re);
+				if (m && m.length == 3) { e.className = e.className.replace(re, (m[1] && m[2])?' ':''); }
+			}
+		}
 	};
 	H5F.isHostMethod = function(o, m) {
 		var t = typeof o[m], reFeaturedMethod = new RegExp('^function|object$', 'i');
