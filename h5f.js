@@ -5,7 +5,6 @@
  * Copyright (c) 2010 Ryan Seddon - http://thecssninja.com/
  * Dual-licensed under the BSD and MIT licenses.
  * http://thecssninja.com/H5F/license.txt
- *
  */
 
 var H5F = H5F || {};
@@ -54,7 +53,7 @@ var H5F = H5F || {};
 		H5F.listen(form,"focus",H5F.checkField,true);
 		
 		if(!H5F.support()) { 
-			form.checkValidity = function(e,f) { H5F.checkValidity("",form); };
+			form.checkValidity = function() { H5F.checkValidity(form); };
 			
 			while(flen--) {
 				isRequired = !!(f[flen].attributes["required"]);
@@ -78,7 +77,6 @@ var H5F = H5F || {};
 			min = H5F.range(elem,"min"),
 			max = H5F.range(elem,"max");
 		
-		// Unlike the spec these aren't readonly, getter & setters in IE7 and down aren't available
 		elem.validity = {
 			patternMismatch: patt,
 			rangeOverflow: max,
@@ -89,7 +87,7 @@ var H5F = H5F || {};
 		};
 		
 		if(placeholder && curEvt !== "input") { H5F.placeholder(elem); }
-		elem.checkValidity = function(e,el) { H5F.checkValidity(e,elem); };
+		elem.checkValidity = function() { H5F.checkValidity(elem); };
 	};
 	H5F.checkField = function (e) {
 		var el = H5F.getTarget(e) || e, // checkValidity method passes element not event
@@ -99,19 +97,26 @@ var H5F = H5F || {};
 		if(!H5F.support()) { H5F.validity(el); }
 		
 		if(el.validity.valid) {
+			H5F.removeClass(el,args.invalidClass);
+			H5F.removeClass(el,args.requiredClass);
 			H5F.addClass(el,args.validClass);
 		} else if(!events.test(curEvt)) {
 			if(el.validity.valueMissing) {
+				H5F.removeClass(el,args.invalidClass);
+				H5F.removeClass(el,args.validClass);
 				H5F.addClass(el,args.requiredClass);
 			} else {
+				H5F.removeClass(el,args.validClass);
+				H5F.removeClass(el,args.requiredClass);
 				H5F.addClass(el,args.invalidClass);
 			}
 		} else if(el.validity.valueMissing) {
 			H5F.removeClass(el,args.requiredClass);
 			H5F.removeClass(el,args.invalidClass);
+			H5F.removeClass(el,args.validClass);
 		}
 	};
-	H5F.checkValidity = function (e,el) {
+	H5F.checkValidity = function (el) {
 		var f, ff, isRequired, invalid = false;
 		
 		if(el.nodeName === "FORM") {
@@ -134,14 +139,9 @@ var H5F = H5F || {};
 			H5F.checkField(el);
 			return el.validity.valid;
 		}
-		
-		if(e.type === "submit" && invalid) { H5F.preventActions(e); }
-		
-		return !invalid;
 	};
 	
 	H5F.support = function() {
-		// Check for native support
 		return (H5F.isHostMethod(field,"validity") && H5F.isHostMethod(field,"checkValidity"));
 	};
 
