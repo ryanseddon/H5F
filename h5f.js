@@ -13,7 +13,7 @@ var H5F = H5F || {};
     
     var field = d.createElement("input"),
         emailPatt = new RegExp("([a-z0-9_.-]+)@([0-9a-z.-]+).([a-z.]{2,6})","i"), 
-        urlPatt = new RegExp("^http:\/\/","i"),
+        urlPatt = new RegExp("[a-z][-\.+a-z]*:\/\/","i"),
         usrPatt, curEvt, args;
     
     H5F.setup = function(form,settings) {

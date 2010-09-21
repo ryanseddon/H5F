@@ -85,7 +85,11 @@ h2 { font-size: 14px; margin: 0 0 12px; }
 	background-color: #fff; 
 	background-position: 379px -29px;
 }
-#signup input.valid,
+#signup input.valid
+{ 
+	background-color: #fff;
+	background-position: 379px -61px;
+}
 #signup fieldset input:required:valid
 { 
 	background-color: #fff;
