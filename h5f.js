@@ -126,8 +126,9 @@ var H5F = H5F || {};
                 ff = f[i];
                 
                 isRequired = !!(ff.attributes["required"]);
+                hasPattern = !!(ff.attributes["pattern"]);
                 
-                if(ff.nodeName !== "FIELDSET" && isRequired) {
+                if(ff.nodeName !== "FIELDSET" && (isRequired || hasPattern)) {
                     H5F.checkField(ff);
                     if(!ff.validity.valid && !invalid) {
                         ff.focus();
@@ -201,8 +202,9 @@ var H5F = H5F || {};
         return (required) ? H5F.valueMissing(el) : false;
     };
     H5F.valueMissing = function(el) {
-        var placeholder = el.getAttribute("placeholder");
-        return !!(el.value === "" || el.value === placeholder);
+        var placeholder = el.getAttribute("placeholder"),
+            isRequired = !!(el.attributes["required"]);
+        return !!(isRequired && (el.value === "" || el.value === placeholder));
     };
     
     /* Util methods */
