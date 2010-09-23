@@ -43,7 +43,7 @@ var H5F = H5F || {};
     };
     
     H5F.validation = function(form) {
-        var    f = form.elements,
+        var f = form.elements,
             flen = f.length,
             isRequired;
         
@@ -97,23 +97,18 @@ var H5F = H5F || {};
         if(!H5F.support()) { H5F.validity(el); }
         
         if(el.validity.valid) {
-            H5F.removeClass(el,args.invalidClass);
-            H5F.removeClass(el,args.requiredClass);
+            H5F.removeClass(el,[args.invalidClass,args.requiredClass]);
             H5F.addClass(el,args.validClass);
         } else if(!events.test(curEvt)) {
             if(el.validity.valueMissing) {
-                H5F.removeClass(el,args.invalidClass);
-                H5F.removeClass(el,args.validClass);
+                H5F.removeClass(el,[args.invalidClass,args.validClass]);
                 H5F.addClass(el,args.requiredClass);
             } else {
-                H5F.removeClass(el,args.validClass);
-                H5F.removeClass(el,args.requiredClass);
+                H5F.removeClass(el,[args.validClass,args.requiredClass]);
                 H5F.addClass(el,args.invalidClass);
             }
         } else if(el.validity.valueMissing) {
-            H5F.removeClass(el,args.requiredClass);
-            H5F.removeClass(el,args.invalidClass);
-            H5F.removeClass(el,args.validClass);
+            H5F.removeClass(el,[args.requiredClass,args.invalidClass,args.validClass]);
         }
     };
     H5F.checkValidity = function (el) {
@@ -248,15 +243,17 @@ var H5F = H5F || {};
         }
     };
     H5F.removeClass = function (e,c) {
-        var re, m;
+        var re, m, arr = (typeof c === "object") ? c.length : 1, len = arr;
         if (e.className) {
             if (e.className == c) {
                 e.className = '';
             }
             else {        
-                re = new RegExp('(^|\\s)' + c + '(\\s|$)');
-                m = e.className.match(re);
-                if (m && m.length == 3) { e.className = e.className.replace(re, (m[1] && m[2])?' ':''); }
+                while(arr--) {
+                    re = new RegExp('(^|\\s)' + ((len > 1) ? c[arr] : c) + '(\\s|$)');
+                    m = e.className.match(re);
+                    if (m && m.length == 3) { e.className = e.className.replace(re, (m[1] && m[2])?' ':''); }
+                }
             }
         }
     };
