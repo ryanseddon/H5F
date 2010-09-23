@@ -53,7 +53,7 @@ var H5F = H5F || {};
         H5F.listen(form,"focus",H5F.checkField,true);
         
         if(!H5F.support()) { 
-            form.checkValidity = function() { H5F.checkValidity(form); };
+            form.checkValidity = function() { return H5F.checkValidity(form); };
             
             while(flen--) {
                 isRequired = !!(f[flen].attributes["required"]);
@@ -87,7 +87,7 @@ var H5F = H5F || {};
         };
         
         if(placeholder && curEvt !== "input") { H5F.placeholder(elem); }
-        elem.checkValidity = function() { H5F.checkValidity(elem); };
+        elem.checkValidity = function() { return H5F.checkValidity(elem); };
     };
     H5F.checkField = function (e) {
         var el = H5F.getTarget(e) || e, // checkValidity method passes element not event
@@ -130,6 +130,7 @@ var H5F = H5F || {};
                     }
                 }
             }
+            return !invalid;
         } else {
             H5F.checkField(el);
             return el.validity.valid;
