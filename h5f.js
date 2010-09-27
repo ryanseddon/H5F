@@ -49,7 +49,10 @@ var H5F = H5F || {};
         
         H5F.listen(form,"invalid",H5F.checkField,true);
         H5F.listen(form,"blur",H5F.checkField,true);
+        if ("oninput" in form)
         H5F.listen(form,"input",H5F.checkField,true);
+        else
+          H5F.listen(form,"keypress",H5F.checkField,true);
         H5F.listen(form,"focus",H5F.checkField,true);
         
         if(!H5F.support()) { 
@@ -70,7 +73,7 @@ var H5F = H5F || {};
             type = elem.getAttribute("type"),
             pattern = elem.getAttribute("pattern"),
             placeholder = elem.getAttribute("placeholder"),
-            isType = /^(email|url|password)$/i,
+            isType = /^(email|url)$/i,
             fType = ((isType.test(type)) ? type : ((pattern) ? pattern : false)),
             patt = H5F.pattern(elem,fType),
             step = H5F.range(elem,"step"),
@@ -86,7 +89,7 @@ var H5F = H5F || {};
             valueMissing: missing
         };
         
-        if(placeholder && curEvt !== "input") { H5F.placeholder(elem); }
+        if(placeholder && curEvt !== "input" && curEvt !== 'keypress') { H5F.placeholder(elem); }
         elem.checkValidity = function() { return H5F.checkValidity(elem); };
     };
     H5F.checkField = function (e) {
@@ -148,7 +151,7 @@ var H5F = H5F || {};
             return !emailPatt.test(el.value);
         } else if(type === "url") {
             return !urlPatt.test(el.value);
-        } else if(!type || type === "password") { // Password can't be evalutated.
+        } else if(!type) {
             return false;
         } else {
             usrPatt = new RegExp(type);
