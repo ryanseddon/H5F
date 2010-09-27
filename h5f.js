@@ -52,7 +52,7 @@ var H5F = H5F || {};
         if ("oninput" in form)
         H5F.listen(form,"input",H5F.checkField,true);
         else
-          H5F.listen(form,"keypress",H5F.checkField,true);
+          H5F.listen(form,"keyup",H5F.checkField,true);
         H5F.listen(form,"focus",H5F.checkField,true);
         
         if(!H5F.support()) { 
@@ -89,7 +89,7 @@ var H5F = H5F || {};
             valueMissing: missing
         };
         
-        if(placeholder && curEvt !== "input" && curEvt !== 'keypress') { H5F.placeholder(elem); }
+        if(placeholder && curEvt !== "input" && curEvt !== 'keyup') { H5F.placeholder(elem); }
         elem.checkValidity = function() { return H5F.checkValidity(elem); };
     };
     H5F.checkField = function (e) {
