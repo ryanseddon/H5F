@@ -49,10 +49,8 @@ var H5F = H5F || {};
         
         H5F.listen(form,"invalid",H5F.checkField,true);
         H5F.listen(form,"blur",H5F.checkField,true);
-        if ("oninput" in form)
         H5F.listen(form,"input",H5F.checkField,true);
-        else
-          H5F.listen(form,"keyup",H5F.checkField,true);
+        H5F.listen(form,"keyup",H5F.checkField,true);
         H5F.listen(form,"focus",H5F.checkField,true);
         
         if(!H5F.support()) { 
@@ -74,6 +72,7 @@ var H5F = H5F || {};
             pattern = elem.getAttribute("pattern"),
             placeholder = elem.getAttribute("placeholder"),
             isType = /^(email|url)$/i,
+			evt = /^(input|keyup)$/i,
             fType = ((isType.test(type)) ? type : ((pattern) ? pattern : false)),
             patt = H5F.pattern(elem,fType),
             step = H5F.range(elem,"step"),
@@ -89,12 +88,13 @@ var H5F = H5F || {};
             valueMissing: missing
         };
         
-        if(placeholder && curEvt !== "input" && curEvt !== 'keyup') { H5F.placeholder(elem); }
+        if(placeholder && !evt.test(curEvt)) { H5F.placeholder(elem); }
         elem.checkValidity = function() { return H5F.checkValidity(elem); };
     };
     H5F.checkField = function (e) {
         var el = H5F.getTarget(e) || e, // checkValidity method passes element not event
-            events = /^(input|focusin|focus)$/i;
+            events = /^(input|keyup|focusin|focus)$/i,
+			checkForm = true;
         
         curEvt = e.type;
         if(!H5F.support()) { H5F.validity(el); }
@@ -113,6 +113,11 @@ var H5F = H5F || {};
         } else if(el.validity.valueMissing) {
             H5F.removeClass(el,[args.requiredClass,args.invalidClass,args.validClass]);
         }
+		if(curEvt === "input" && checkForm) {
+			// If input is triggered remove the keyup event
+			H5F.unlisten(el.form,"keyup",H5F.checkField,true);
+			checkForm = false;
+		}
     };
     H5F.checkValidity = function (el) {
         var f, ff, isRequired, invalid = false;
@@ -218,6 +223,15 @@ var H5F = H5F || {};
                 type = "focusin";
             }
             node.attachEvent( "on" + type, fn );
+        }
+    };
+	H5F.unlisten = function (node,type,fn,capture) {
+        if(H5F.isHostMethod(window,"removeEventListener")) {
+            /* FF & Other Browsers */
+            node.removeEventListener( type, fn, capture );
+        } else if(H5F.isHostMethod(window,"detachEvent") && typeof window.event !== "undefined") {
+            /* Internet Explorer way */
+            node.detachEvent( "on" + type, fn );
         }
     };
     H5F.preventActions = function (evt) {
