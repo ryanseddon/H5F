@@ -14,6 +14,7 @@ var H5F = H5F || {};
     var field = d.createElement("input"),
         emailPatt = new RegExp("^([a-z0-9_.-]+)@([0-9a-z.-]+).([a-z.]{2,6})$","i"), 
         urlPatt = new RegExp("[a-z][-\.+a-z]*:\/\/","i"),
+		nodes = new RegExp("^(input|select|textarea)$","i"),
         usrPatt, curEvt, args;
     
     H5F.setup = function(form,settings) {
@@ -25,9 +26,9 @@ var H5F = H5F || {};
             requiredClass : "required"
         };
 
-        if(typeof settings === "object") {
+        if(typeof settings == "object") {
             for (var i in opts) {
-                if(typeof settings[i] === "undefined") { settings[i] = opts[i]; }
+                if(typeof settings[i] == "undefined") { settings[i] = opts[i]; }
             }
         }
         
@@ -59,7 +60,7 @@ var H5F = H5F || {};
             while(flen--) {
                 isRequired = !!(f[flen].attributes["required"]);
                 // Firefox includes fieldsets inside elements nodelist so we filter it out.
-                if(f[flen].nodeName !== "FIELDSET" && isRequired) {
+                if(f[flen].nodeName !== "FIELDSET") {
                     H5F.validity(f[flen]); // Add validity object to field
                 }
             }
@@ -79,48 +80,51 @@ var H5F = H5F || {};
             min = H5F.range(elem,"min"),
             max = H5F.range(elem,"max");
         
-        elem.validity = {
-            patternMismatch: patt,
+        elem.checkValidity = function() { return H5F.checkValidity(elem); };
+		
+		elem.validity = {
+            valueMissing: missing,
+			patternMismatch: patt,
+			rangeUnderflow: min,
             rangeOverflow: max,
-            rangeUnderflow: min,
             stepMismatch: step,
-            valid: (!missing && !patt && !step && !min && !max),
-            valueMissing: missing
+            valid: (!missing && !patt && !step && !min && !max)
         };
         
-        if(placeholder && !evt.test(curEvt)) { H5F.placeholder(elem); }
-        elem.checkValidity = function() { return H5F.checkValidity(elem); };
+		if(placeholder && !evt.test(curEvt)) { H5F.placeholder(elem); }
     };
     H5F.checkField = function (e) {
         var el = H5F.getTarget(e) || e, // checkValidity method passes element not event
             events = /^(input|keyup|focusin|focus)$/i,
 			checkForm = true;
         
-        curEvt = e.type;
-        if(!H5F.support()) { H5F.validity(el); }
-        
-        if(el.validity.valid) {
-            H5F.removeClass(el,[args.invalidClass,args.requiredClass]);
-            H5F.addClass(el,args.validClass);
-        } else if(!events.test(curEvt)) {
-            if(el.validity.valueMissing) {
-                H5F.removeClass(el,[args.invalidClass,args.validClass]);
-                H5F.addClass(el,args.requiredClass);
-            } else {
-                H5F.removeClass(el,[args.validClass,args.requiredClass]);
-                H5F.addClass(el,args.invalidClass);
-            }
-        } else if(el.validity.valueMissing) {
-            H5F.removeClass(el,[args.requiredClass,args.invalidClass,args.validClass]);
-        }
-		if(curEvt === "input" && checkForm) {
-			// If input is triggered remove the keyup event
-			H5F.unlisten(el.form,"keyup",H5F.checkField,true);
-			checkForm = false;
+		if(nodes.test(el.nodeName)) {
+			curEvt = e.type;
+			if(!H5F.support()) { H5F.validity(el); }
+			
+			if(el.validity.valid) {
+				H5F.removeClass(el,[args.invalidClass,args.requiredClass]);
+				H5F.addClass(el,args.validClass);
+			} else if(!events.test(curEvt)) {
+				if(el.validity.valueMissing) {
+					H5F.removeClass(el,[args.invalidClass,args.validClass]);
+					H5F.addClass(el,args.requiredClass);
+				} else {
+					H5F.removeClass(el,[args.validClass,args.requiredClass]);
+					H5F.addClass(el,args.invalidClass);
+				}
+			} else if(el.validity.valueMissing) {
+				H5F.removeClass(el,[args.requiredClass,args.invalidClass,args.validClass]);
+			}
+			if(curEvt === "input" && checkForm) {
+				// If input is triggered remove the keyup event
+				H5F.unlisten(el.form,"keyup",H5F.checkField,true);
+				checkForm = false;
+			}
 		}
     };
     H5F.checkValidity = function (el) {
-        var f, ff, isRequired, invalid = false;
+        var f, ff, isRequired, hasPattern, invalid = false;
         
         if(el.nodeName === "FORM") {
             f = el.elements;
@@ -159,8 +163,18 @@ var H5F = H5F || {};
         } else if(!type) {
             return false;
         } else {
-            usrPatt = new RegExp(type);
-            return !usrPatt.test(el.value);
+            var placeholder = el.getAttribute("placeholder"),
+				val = el.value;
+			
+			usrPatt = new RegExp(type);
+			
+			if(val === placeholder) {	
+				return true;
+			} else if(val === "") {
+				return false;
+			} else {
+				return !usrPatt.test(el.value);
+			}
         }
     };
     H5F.placeholder = function(el) {
@@ -170,7 +184,7 @@ var H5F = H5F || {};
             isNative = !!("placeholder" in field);
         
         if(!isNative && node.test(el.nodeName)) {
-            if(el.value === "") {
+            if(el.value === "" && !focus.test(curEvt)) {
                 el.value = placeholder;
             } else if(el.value === placeholder && focus.test(curEvt)) {
                 el.value = "";

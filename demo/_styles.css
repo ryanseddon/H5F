@@ -68,10 +68,8 @@ h2 { font-size: 14px; margin: 0 0 12px; }
 	#signup fieldset #postcode	{ padding: 3px; width: 400px; }
 	
 
-#signup input::-webkit-input-placeholder,
-#signup input:-moz-placeholder {
-	color: #a9a9a9;
-}
+#signup input::-webkit-input-placeholder	{ color: #a9a9a9; }
+#signup input:-moz-placeholder			{ color: #a9a9a9; }
 
 /* Enhanced error styling */
 #signup input.error
