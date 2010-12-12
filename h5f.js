@@ -15,7 +15,7 @@ var H5F = H5F || {};
         emailPatt = new RegExp("^([a-z0-9_.-]+)@([0-9a-z.-]+).([a-z.]{2,6})$","i"), 
         urlPatt = new RegExp("[a-z][-\.+a-z]*:\/\/","i"),
         nodes = new RegExp("^(input|select|textarea)$","i"),
-        usrPatt, curEvt, args;
+        usrPatt, curEvt, args, custMsg = "";
     
     H5F.setup = function(form,settings) {
         var isCollection = !form.nodeType || false;
@@ -78,9 +78,12 @@ var H5F = H5F || {};
             patt = H5F.pattern(elem,fType),
             step = H5F.range(elem,"step"),
             min = H5F.range(elem,"min"),
-            max = H5F.range(elem,"max");
+            max = H5F.range(elem,"max"),
+            customError = (custMsg !== "");
         
         elem.checkValidity = function() { return H5F.checkValidity(elem); };
+        elem.setCustomValidity = function(msg) { H5F.setCustomValidity.call(elem,msg); };
+        elem.validationMessage = custMsg;
         
         elem.validity = {
             valueMissing: missing,
@@ -88,7 +91,8 @@ var H5F = H5F || {};
             rangeUnderflow: min,
             rangeOverflow: max,
             stepMismatch: step,
-            valid: (!missing && !patt && !step && !min && !max)
+            customError: customError,
+            valid: (!missing && !patt && !step && !min && !max && !customError)
         };
         
         if(placeholder && !evt.test(curEvt)) { H5F.placeholder(elem); }
@@ -148,6 +152,12 @@ var H5F = H5F || {};
             H5F.checkField(el);
             return el.validity.valid;
         }
+    };
+    H5F.setCustomValidity = function (msg) {
+        var el = this;
+            custMsg = msg;
+            
+        el.validationMessage = custMsg;
     };
     
     H5F.support = function() {
