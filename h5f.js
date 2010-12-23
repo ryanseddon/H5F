@@ -101,9 +101,10 @@ var H5F = H5F || {};
     H5F.checkField = function (e) {
         var el = H5F.getTarget(e) || e, // checkValidity method passes element not event
             events = /^(input|keyup|focusin|focus)$/i,
+            ignoredType = /^submit$/i,
             checkForm = true;
         
-        if(nodes.test(el.nodeName)) {
+        if(nodes.test(el.nodeName) && !ignoredType.test(el.type)) {
             curEvt = e.type;
             if(!H5F.support()) { H5F.validity(el); }
             
@@ -202,10 +203,10 @@ var H5F = H5F || {};
                   curEvt = 'submit';
                   H5F.placeholder(el);
                 }, true);
-                H5F.addClass(el, args.placeholderClass);
+                H5F.addClass(el,args.placeholderClass);
             } else if(el.value === placeholder && focus.test(curEvt)) {
                 el.value = "";
-                H5F.removeClass(el, args.placeholderClass);
+                H5F.removeClass(el,args.placeholderClass);
             }
         }
     };
