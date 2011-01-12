@@ -12,7 +12,7 @@ var H5F = H5F || {};
 (function(d){
     
     var field = d.createElement("input"),
-        emailPatt = new RegExp("^([a-z0-9_.-]+)@([0-9a-z.-]+).([a-z.]{2,6})$","i"), 
+        emailPatt = new RegExp("^([a-z0-9_.+-]+)@([0-9a-z.-]+).([a-z.]{2,6})$","i"),
         urlPatt = new RegExp("[a-z][-\.+a-z]*:\/\/","i"),
         nodes = new RegExp("^(input|select|textarea)$","i"),
         usrPatt, curEvt, args, custMsg = "";
