@@ -178,7 +178,7 @@ var H5F = H5F || {};
             var placeholder = el.getAttribute("placeholder"),
                 val = el.value;
             
-            usrPatt = new RegExp(type);
+            usrPatt = new RegExp('^' + type + '$');
             
             if(val === placeholder) {    
                 return true;
