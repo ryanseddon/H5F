@@ -23,7 +23,8 @@ var H5F = H5F || {};
         var opts = {
             validClass : "valid",
             invalidClass : "error",
-            requiredClass : "required"
+            requiredClass : "required",
+            placeholderClass : "placeholder"
         };
 
         if(typeof settings == "object") {
@@ -100,9 +101,10 @@ var H5F = H5F || {};
     H5F.checkField = function (e) {
         var el = H5F.getTarget(e) || e, // checkValidity method passes element not event
             events = /^(input|keyup|focusin|focus)$/i,
+            ignoredTypes = /^(submit|image|button|reset)$/i,
             checkForm = true;
         
-        if(nodes.test(el.nodeName)) {
+        if(nodes.test(el.nodeName) && !(ignoredTypes.test(el.type) || ignoredTypes.test(el.nodeName))) {
             curEvt = e.type;
             if(!H5F.support()) { H5F.validity(el); }
             
@@ -176,7 +178,7 @@ var H5F = H5F || {};
             var placeholder = el.getAttribute("placeholder"),
                 val = el.value;
             
-            usrPatt = new RegExp(type);
+            usrPatt = new RegExp('^(?:' + type + ')$');
             
             if(val === placeholder) {    
                 return true;
@@ -189,15 +191,22 @@ var H5F = H5F || {};
     };
     H5F.placeholder = function(el) {
         var placeholder = el.getAttribute("placeholder"),
-            focus = /^(focus|focusin)$/i,
+            focus = /^(focus|focusin|submit)$/i,
             node = /^(input|textarea)$/i,
+            ignoredType = /^password$/i,
             isNative = !!("placeholder" in field);
         
-        if(!isNative && node.test(el.nodeName)) {
+        if(!isNative && node.test(el.nodeName) && !ignoredType.test(el.type)) {
             if(el.value === "" && !focus.test(curEvt)) {
                 el.value = placeholder;
+                H5F.listen(el.form,'submit', function () {
+                  curEvt = 'submit';
+                  H5F.placeholder(el);
+                }, true);
+                H5F.addClass(el,args.placeholderClass);
             } else if(el.value === placeholder && focus.test(curEvt)) {
                 el.value = "";
+                H5F.removeClass(el,args.placeholderClass);
             }
         }
     };
