@@ -77,7 +77,8 @@ The H5F.setup method also accepts a second optional argument so you can specify 
     H5F.setup(document.getElementById("signup"), {
         validClass: "valid",
         invalidClass: "invalid",
-        requiredClass: "required"
+        requiredClass: "required",
+		placeholderClass: "placeholder"
     });
 	
 [http://thecssninja.com/javascript/H5F](http://thecssninja.com/javascript/H5F)
