@@ -12,7 +12,7 @@ var H5F = H5F || {};
 (function(d){
     
     var field = d.createElement("input"),
-        emailPatt = new RegExp("^([a-z0-9_.+-]+)@([0-9a-z.-]+).([a-z.]{2,6})$","i"),
+        emailPatt = new RegExp("^[a-z0-9_.%+-]+@[0-9a-z.-]+\\.[a-z.]{2,6}$","i"), 
         urlPatt = new RegExp("[a-z][-\.+a-z]*:\/\/","i"),
         nodes = new RegExp("^(input|select|textarea)$","i"),
         usrPatt, curEvt, args, custMsg = "";
@@ -101,10 +101,10 @@ var H5F = H5F || {};
     H5F.checkField = function (e) {
         var el = H5F.getTarget(e) || e, // checkValidity method passes element not event
             events = /^(input|keyup|focusin|focus)$/i,
-            ignoredType = /^submit$/i,
+            ignoredTypes = /^(submit|image|button|reset)$/i,
             checkForm = true;
         
-        if(nodes.test(el.nodeName) && !ignoredType.test(el.type)) {
+        if(nodes.test(el.nodeName) && !(ignoredTypes.test(el.type) || ignoredTypes.test(el.nodeName))) {
             curEvt = e.type;
             if(!H5F.support()) { H5F.validity(el); }
             
@@ -178,7 +178,7 @@ var H5F = H5F || {};
             var placeholder = el.getAttribute("placeholder"),
                 val = el.value;
             
-            usrPatt = new RegExp('^' + type + '$');
+            usrPatt = new RegExp('^(?:' + type + ')$');
             
             if(val === placeholder) {    
                 return true;
