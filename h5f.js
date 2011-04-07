@@ -144,7 +144,6 @@ var H5F = H5F || {};
                 if(ff.nodeName !== "FIELDSET" && (isRequired || hasPattern)) {
                     H5F.checkField(ff);
                     if(!ff.validity.valid && !invalid) {
-                        ff.focus();
                         invalid = true;
                     }
                 }
