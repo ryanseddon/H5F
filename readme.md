@@ -17,9 +17,9 @@ H5F offers support for most, but not all, of the HTML5 Forms Chapter:
 Also supported is the constraint validation API:
 
 * Field validity object
-* checkValidity() method on form or individual field
-* setCustomValidity() method to set custom error message
-* validationMessage attribute that returns the message set using setCustomValidity() method
+* `checkValidity()` method on form or individual field
+* `setCustomValidity()` method to set custom error message
+* `validationMessage` attribute that returns the message set using `setCustomValidity()` method
 
 ### Example
 
@@ -38,17 +38,17 @@ Also supported is the constraint validation API:
 
 On page load you run the H5F setup method:
 
-H5F.setup(document.getElementById("signup"));
+	H5F.setup(document.getElementById("signup"));
 
 For a working demo download the demo files.
 
 #### Setting custom error message
 
-With setCustomValidity() method you can set a custom error message on a field and it will be in an invalid state until the custom message is set back to an empty string.
+With `setCustomValidity()` method you can set a custom error message on a field and it will be in an invalid state until the custom message is set back to an empty string.
 
 	document.getElementById("other").setCustomValidity("Please enter some information");
 
-This field will be in a permanent invalid state, we can return the custom error message by using the validationMessage attribute
+This field will be in a permanent invalid state, we can return the custom error message by using the `validationMessage` attribute
 
 	document.getElementById("other").validationMessage;
 	// "Please enter some information"
@@ -72,7 +72,7 @@ You can pass an HTMLFormElement, HTMLCollection of HTMLFormElements, or Array of
 
 #### Optional settings argument
 
-The H5F.setup method also accepts a second optional argument so you can specify the fields validation class names:
+The `H5F.setup` method also accepts a second optional argument so you can specify the fields validation class names:
 
     H5F.setup(document.getElementById("signup"), {
         validClass: "valid",

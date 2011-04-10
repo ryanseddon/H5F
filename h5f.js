@@ -2,7 +2,7 @@
  * HTML5 Forms Chapter JavaScript Library
  * http://thecssninja.com/javascript/H5F
  *
- * Copyright (c) 2010 Ryan Seddon - http://thecssninja.com/
+ * Copyright (c) 2010-2011 Ryan Seddon - http://thecssninja.com/
  * Dual-licensed under the BSD and MIT licenses.
  * http://thecssninja.com/H5F/license.txt
  */
@@ -12,12 +12,14 @@ var H5F = H5F || {};
 (function(d){
     
     var field = d.createElement("input"),
-        emailPatt = new RegExp("^[a-z0-9_.%+-]+@[0-9a-z.-]+\\.[a-z.]{2,6}$","i"), 
-        urlPatt = new RegExp("[a-z][-\.+a-z]*:\/\/","i"),
-        nodes = new RegExp("^(input|select|textarea)$","i"),
-        usrPatt, curEvt, args, custMsg = "";
+        emailPatt = /^[a-z0-9_.%+-]+@[0-9a-z.-]+\.[a-z.]{2,6}$/i, 
+        urlPatt = /[a-z][-\.+a-z]*:\/\//i,
+        nodes = /^(input|select|textarea)$/i,
+        isSubmit, usrPatt, curEvt, args, custMsg = "",
+        // Methods
+        setup, validation, validity, checkField, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod;
     
-    H5F.setup = function(form,settings) {
+    setup = function(form,settings) {
         var isCollection = !form.nodeType || false;
         
         var opts = {
@@ -37,53 +39,65 @@ var H5F = H5F || {};
         
         if(isCollection) {
             for(var k=0,len=form.length;k<len;k++) {
-                H5F.validation(form[k]);
+                validation(form[k]);
             }
         } else {
-            H5F.validation(form);
+            validation(form);
         }
     };
     
-    H5F.validation = function(form) {
+    validation = function(form) {
         var f = form.elements,
             flen = f.length,
-            isRequired;
+            isRequired, noValidate = !!(form.attributes["novalidate"]);
         
-        H5F.listen(form,"invalid",H5F.checkField,true);
-        H5F.listen(form,"blur",H5F.checkField,true);
-        H5F.listen(form,"input",H5F.checkField,true);
-        H5F.listen(form,"keyup",H5F.checkField,true);
-        H5F.listen(form,"focus",H5F.checkField,true);
+        listen(form,"invalid",checkField,true);
+        listen(form,"blur",checkField,true);
+        listen(form,"input",checkField,true);
+        listen(form,"keyup",checkField,true);
+        listen(form,"focus",checkField,true);
         
-        if(!H5F.support()) { 
-            form.checkValidity = function() { return H5F.checkValidity(form); };
+        if(!noValidate && !form.checkValidity) {
+            listen(form,"submit",function(e){
+                isSubmit = true;
+                form.checkValidity();
+                preventActions(e);
+            },false);
+        } else {
+            unlisten(form,"submit");
+        }
+        
+        if(!support()) { 
+            form.checkValidity = function() { return checkValidity(form); };
             
             while(flen--) {
                 isRequired = !!(f[flen].attributes["required"]);
                 // Firefox includes fieldsets inside elements nodelist so we filter it out.
                 if(f[flen].nodeName !== "FIELDSET") {
-                    H5F.validity(f[flen]); // Add validity object to field
+                    validity(f[flen]); // Add validity object to field
                 }
             }
         }
     };
-    H5F.validity = function(el) {
+    validity = function(el) {
         var elem = el,
-            missing = H5F.valueMissing(elem),
-            type = elem.getAttribute("type"),
-            pattern = elem.getAttribute("pattern"),
-            placeholder = elem.getAttribute("placeholder"),
+            missing = valueMissing(elem),
+            attrs = { 
+                type: elem.getAttribute("type"), 
+                pattern: elem.getAttribute("pattern"), 
+                placeholder: elem.getAttribute("placeholder") 
+            },
             isType = /^(email|url)$/i,
             evt = /^(input|keyup)$/i,
-            fType = ((isType.test(type)) ? type : ((pattern) ? pattern : false)),
-            patt = H5F.pattern(elem,fType),
-            step = H5F.range(elem,"step"),
-            min = H5F.range(elem,"min"),
-            max = H5F.range(elem,"max"),
+            fType = ((isType.test(attrs.type)) ? attrs.type : ((attrs.pattern) ? attrs.pattern : false)),
+            patt = pattern(elem,fType),
+            step = range(elem,"step"),
+            min = range(elem,"min"),
+            max = range(elem,"max"),
             customError = (custMsg !== "");
         
-        elem.checkValidity = function() { return H5F.checkValidity(elem); };
-        elem.setCustomValidity = function(msg) { H5F.setCustomValidity.call(elem,msg); };
+        elem.checkValidity = function() { return checkValidity.call(this,elem); };
+        elem.setCustomValidity = function(msg) { setCustomValidity.call(elem,msg); };
         elem.validationMessage = custMsg;
         
         elem.validity = {
@@ -96,40 +110,40 @@ var H5F = H5F || {};
             valid: (!missing && !patt && !step && !min && !max && !customError)
         };
         
-        if(placeholder && !evt.test(curEvt)) { H5F.placeholder(elem); }
+        if(attrs.placeholder && !evt.test(curEvt)) { placeholder(elem); }
     };
-    H5F.checkField = function (e) {
-        var el = H5F.getTarget(e) || e, // checkValidity method passes element not event
+    checkField = function (e) {
+        var el = getTarget(e) || e, // checkValidity method passes element not event
             events = /^(input|keyup|focusin|focus)$/i,
             ignoredTypes = /^(submit|image|button|reset)$/i,
             checkForm = true;
         
         if(nodes.test(el.nodeName) && !(ignoredTypes.test(el.type) || ignoredTypes.test(el.nodeName))) {
             curEvt = e.type;
-            if(!H5F.support()) { H5F.validity(el); }
+            if(!support()) { validity(el); }
             
             if(el.validity.valid) {
-                H5F.removeClass(el,[args.invalidClass,args.requiredClass]);
-                H5F.addClass(el,args.validClass);
+                removeClass(el,[args.invalidClass,args.requiredClass]);
+                addClass(el,args.validClass);
             } else if(!events.test(curEvt)) {
                 if(el.validity.valueMissing) {
-                    H5F.removeClass(el,[args.invalidClass,args.validClass]);
-                    H5F.addClass(el,args.requiredClass);
+                    removeClass(el,[args.invalidClass,args.validClass]);
+                    addClass(el,args.requiredClass);
                 } else {
-                    H5F.removeClass(el,[args.validClass,args.requiredClass]);
-                    H5F.addClass(el,args.invalidClass);
+                    removeClass(el,[args.validClass,args.requiredClass]);
+                    addClass(el,args.invalidClass);
                 }
             } else if(el.validity.valueMissing) {
-                H5F.removeClass(el,[args.requiredClass,args.invalidClass,args.validClass]);
+                removeClass(el,[args.requiredClass,args.invalidClass,args.validClass]);
             }
             if(curEvt === "input" && checkForm) {
                 // If input is triggered remove the keyup event
-                H5F.unlisten(el.form,"keyup",H5F.checkField,true);
+                unlisten(el.form,"keyup",checkField,true);
                 checkForm = false;
             }
         }
     };
-    H5F.checkValidity = function (el) {
+    checkValidity = function (el) {
         var f, ff, isRequired, hasPattern, invalid = false;
         
         if(el.nodeName === "FORM") {
@@ -141,33 +155,35 @@ var H5F = H5F || {};
                 isRequired = !!(ff.attributes["required"]);
                 hasPattern = !!(ff.attributes["pattern"]);
                 
-                if(ff.nodeName !== "FIELDSET" && (isRequired || hasPattern)) {
-                    H5F.checkField(ff);
+                if(ff.nodeName !== "FIELDSET" && (isRequired || hasPattern && isRequired)) {
+                    checkField(ff);
                     if(!ff.validity.valid && !invalid) {
-                        ff.focus();
+                        if(isSubmit) { // If it's not a submit event the field shouldn't be focused
+                            ff.focus();
+                        }
                         invalid = true;
                     }
                 }
             }
             return !invalid;
         } else {
-            H5F.checkField(el);
+            checkField(el);
             return el.validity.valid;
         }
     };
-    H5F.setCustomValidity = function (msg) {
-        var el = this;
+    setCustomValidity = function (msg) {
+        var el = this,
             custMsg = msg;
             
         el.validationMessage = custMsg;
     };
     
-    H5F.support = function() {
-        return (H5F.isHostMethod(field,"validity") && H5F.isHostMethod(field,"checkValidity"));
+    support = function() {
+        return (isHostMethod(field,"validity") && isHostMethod(field,"checkValidity"));
     };
 
     // Create helper methods to emulate attributes in older browsers
-    H5F.pattern = function(el, type) {
+    pattern = function(el, type) {
         if(type === "email") {
             return !emailPatt.test(el.value);
         } else if(type === "url") {
@@ -189,8 +205,8 @@ var H5F = H5F || {};
             }
         }
     };
-    H5F.placeholder = function(el) {
-        var placeholder = el.getAttribute("placeholder"),
+    placeholder = function(el) {
+        var attrs = { placeholder: el.getAttribute("placeholder") },
             focus = /^(focus|focusin|submit)$/i,
             node = /^(input|textarea)$/i,
             ignoredType = /^password$/i,
@@ -198,19 +214,19 @@ var H5F = H5F || {};
         
         if(!isNative && node.test(el.nodeName) && !ignoredType.test(el.type)) {
             if(el.value === "" && !focus.test(curEvt)) {
-                el.value = placeholder;
-                H5F.listen(el.form,'submit', function () {
+                el.value = attrs.placeholder;
+                listen(el.form,'submit', function () {
                   curEvt = 'submit';
-                  H5F.placeholder(el);
+                  placeholder(el);
                 }, true);
-                H5F.addClass(el,args.placeholderClass);
-            } else if(el.value === placeholder && focus.test(curEvt)) {
+                addClass(el,args.placeholderClass);
+            } else if(el.value === attrs.placeholder && focus.test(curEvt)) {
                 el.value = "";
-                H5F.removeClass(el,args.placeholderClass);
+                removeClass(el,args.placeholderClass);
             }
         }
     };
-    H5F.range = function(el,type) {
+    range = function(el,type) {
         // Emulate min, max and step
         var min = parseInt(el.getAttribute("min"),10) || 0,
             max = parseInt(el.getAttribute("max"),10) || false,
@@ -218,7 +234,7 @@ var H5F = H5F || {};
             val = parseInt(el.value,10),
             mismatch = (val-min)%step;
         
-        if(!H5F.valueMissing(el) && !isNaN(val)) {
+        if(!valueMissing(el) && !isNaN(val)) {
             if(type === "step") {
                 return (el.getAttribute("step")) ? (mismatch !== 0) : false;
             } else if(type === "min") {
@@ -232,23 +248,23 @@ var H5F = H5F || {};
             return false;
         }
     };
-    H5F.required = function(el) {
+    required = function(el) {
         var required = !!(el.attributes["required"]);
         
-        return (required) ? H5F.valueMissing(el) : false;
+        return (required) ? valueMissing(el) : false;
     };
-    H5F.valueMissing = function(el) {
+    valueMissing = function(el) {
         var placeholder = el.getAttribute("placeholder"),
             isRequired = !!(el.attributes["required"]);
         return !!(isRequired && (el.value === "" || el.value === placeholder));
     };
     
     /* Util methods */
-    H5F.listen = function (node,type,fn,capture) {
-        if(H5F.isHostMethod(window,"addEventListener")) {
+    listen = function (node,type,fn,capture) {
+        if(isHostMethod(window,"addEventListener")) {
             /* FF & Other Browsers */
             node.addEventListener( type, fn, capture );
-        } else if(H5F.isHostMethod(window,"attachEvent") && typeof window.event !== "undefined") {
+        } else if(isHostMethod(window,"attachEvent") && typeof window.event !== "undefined") {
             /* Internet Explorer way */
             if(type === "blur") {
                 type = "focusout";
@@ -258,16 +274,16 @@ var H5F = H5F || {};
             node.attachEvent( "on" + type, fn );
         }
     };
-    H5F.unlisten = function (node,type,fn,capture) {
-        if(H5F.isHostMethod(window,"removeEventListener")) {
+    unlisten = function (node,type,fn,capture) {
+        if(isHostMethod(window,"removeEventListener")) {
             /* FF & Other Browsers */
             node.removeEventListener( type, fn, capture );
-        } else if(H5F.isHostMethod(window,"detachEvent") && typeof window.event !== "undefined") {
+        } else if(isHostMethod(window,"detachEvent") && typeof window.event !== "undefined") {
             /* Internet Explorer way */
             node.detachEvent( "on" + type, fn );
         }
     };
-    H5F.preventActions = function (evt) {
+    preventActions = function (evt) {
         evt = evt || window.event;
         
         if(evt.stopPropagation && evt.preventDefault) {
@@ -278,11 +294,11 @@ var H5F = H5F || {};
             evt.returnValue = false;
         }
     };
-    H5F.getTarget = function (evt) {
+    getTarget = function (evt) {
         evt = evt || window.event;
         return evt.target || evt.srcElement;
     };
-    H5F.addClass = function (e,c) {
+    addClass = function (e,c) {
         var re;
         if (!e.className) {
             e.className = c;
@@ -292,7 +308,7 @@ var H5F = H5F || {};
             if (!re.test(e.className)) { e.className += ' ' + c; }
         }
     };
-    H5F.removeClass = function (e,c) {
+    removeClass = function (e,c) {
         var re, m, arr = (typeof c === "object") ? c.length : 1, len = arr;
         if (e.className) {
             if (e.className == c) {
@@ -307,9 +323,14 @@ var H5F = H5F || {};
             }
         }
     };
-    H5F.isHostMethod = function(o, m) {
+    isHostMethod = function(o, m) {
         var t = typeof o[m], reFeaturedMethod = new RegExp('^function|object$', 'i');
         return !!((reFeaturedMethod.test(t) && o[m]) || t == 'unknown');
+    };
+    
+    // Since all methods are only used internally no need to expose globally
+    window["H5F"] = {
+        setup: setup
     };
 
 })(document);

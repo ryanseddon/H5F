@@ -9,7 +9,7 @@
 	
 	<script type="text/javascript" src="../h5f.js"></script>
 	<script type="text/javascript">
-		H5F.listen(window,"load",function () {
+		window.onload = function() {
 			/*
 				Accepts HTMLFormElement, HTMLCollection of HTMLFormElements, or Array of HTMLFormElements.
 				Optional object of options: validClass, invalidClass, requiredClass
@@ -23,7 +23,7 @@
 				});
 			*/
 			H5F.setup(document.getElementById("signup"));
-		},false);
+		}
 	</script>
 	
 	<title>Validate those forms with CSS3 Basic UI module pseudo-classes, HTML5 Form attributes and consraint validation API</title>
@@ -53,8 +53,12 @@
 					<input type="tel" id="tel" name="tel" pattern="\d{10}" placeholder="Please enter a ten digit phone number" required />
 				</li>
 				<li>
+					<label for="date">Date *</label> 
+					<input type="date" id="date" name="date" required />
+				</li>
+				<li>
 					<label for="nickname">Nick name</label> 
-					<input type="text" id="nickname" name="nickname" pattern="\d{4,}" placeholder="A nickname that is atleast four characters" />
+					<input type="text" id="nickname" name="nickname" pattern="\w{4,}" placeholder="A nickname that is atleast four characters" />
 				</li>
 				<li>
 					<label for="other">Other</label> 
@@ -76,7 +80,7 @@
 				</li>
 				<li>
 					<label for="postcode">Post code *</label>
-					<input id="postcode" name="postcode" type="number" min="1001" max="8000" required maxlength="4" />
+					<input id="postcode" name="postcode" type="number" min="1001" max="8000" step="2" required maxlength="4" />
 				</li>
 				<li>
 					<label for="state">State</label>
