@@ -13,6 +13,7 @@ H5F offers support for most, but not all, of the HTML5 Forms Chapter:
 * Input attributes: pattern, placeholder, min, max, step, required
 * Textarea attributes: placeholder and required
 * Select attributes: required
+* Form attributes: novalidate
 
 Also supported is the constraint validation API:
 
@@ -80,6 +81,10 @@ The `H5F.setup` method also accepts a second optional argument so you can specif
         requiredClass: "required",
 		placeholderClass: "placeholder"
     });
+	
+#### Form submission blocking
+
+HTML5 forms will block form submission until the form is invalid this can be switched off by setting the `novalidate` attribute on the parent form element.
 	
 [http://thecssninja.com/javascript/H5F](http://thecssninja.com/javascript/H5F)
 
