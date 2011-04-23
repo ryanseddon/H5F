@@ -57,15 +57,12 @@ var H5F = H5F || {};
         listen(form,"keyup",checkField,true);
         listen(form,"focus",checkField,true);
         
-        if(!noValidate && !form.checkValidity) {
-            listen(form,"submit",function(e){
-                isSubmit = true;
-                form.checkValidity();
+        listen(form,"submit",function(e){
+            isSubmit = true;
+            if(!noValidate && !form.checkValidity()) {
                 preventActions(e);
-            },false);
-        } else {
-            unlisten(form,"submit");
-        }
+            }
+        },false);
         
         if(!support()) { 
             form.checkValidity = function() { return checkValidity(form); };

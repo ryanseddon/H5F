@@ -1,6 +1,6 @@
 (function() {
 	var form = document.getElementById("qunit-fixture"),
-		formElem = document.getElementById("gen"),
+		formElem = document.getElementById("other"),
 		email = document.getElementById("email"),
 		url = document.getElementById("url"),
 		postcode = document.getElementById("postcode"),
@@ -40,7 +40,6 @@
 		formElem.setCustomValidity(msg);
 		ret = formElem.checkValidity();
 		formElem.setCustomValidity("");
-		
 		return !!ret;
 	}
 	test("setCustomValidity and validationMessage", function() {

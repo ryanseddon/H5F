@@ -64,6 +64,28 @@
 					<label for="other">Other</label> 
 					<input type="text" id="other" name="other" placeholder="Other information" />
 				</li>
+				<li class="radchecks">
+					<span class="label">Checkboxes</span>
+					<input type="checkbox" id="checkbox1" name="group1" required />
+					<label for="checkbox1">Checkbox 1</label> 
+					
+					<input type="checkbox" id="checkbox2" name="group1" required />
+					<label for="checkbox2">Checkbox 2</label> 
+					
+					<input type="checkbox" id="checkbox3" name="group1" required />
+					<label for="checkbox3">Checkbox 3</label> 
+				</li>
+				<li class="radchecks">
+					<span class="label">Radios</span>
+					<input type="radio" id="radio1" name="group2" required />
+					<label for="radio1">Radio 1</label> 
+					
+					<input type="radio" id="radio2" name="group2" />
+					<label for="radio2">Radio 2</label> 
+					
+					<input type="radio" id="radio3" name="group2" />
+					<label for="radio3">Radio 3</label> 
+				</li>
 			</ol>
 		</fieldset>
 		
@@ -84,14 +106,15 @@
 				</li>
 				<li>
 					<label for="state">State</label>
-					<select name="state" id="state">
-						<option>ACT</option>
+					<select name="state" id="state" required>
+						<option>Choose state</option>
+						<option value="ACT">ACT</option>
 						<option>NSW</option>
 						<option>NT</option>
 						<option>QLD</option>
 						<option>SA</option>
 						<option>TAS</option>
-						<option selected>VIC</option>
+						<option>VIC</option>
 						<option>WA</option>
 					</select>
 				</li>
