@@ -169,8 +169,8 @@ var H5F = H5F || {};
         }
     };
     setCustomValidity = function (msg) {
-        var el = this,
-            custMsg = msg;
+        var el = this;
+        custMsg = msg;
             
         el.validationMessage = custMsg;
     };
