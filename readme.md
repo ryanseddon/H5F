@@ -84,7 +84,22 @@ The `H5F.setup` method also accepts a second optional argument so you can specif
 	
 #### Form submission blocking
 
-HTML5 forms will block form submission until the form is invalid this can be switched off by setting the `novalidate` attribute on the parent form element.
+HTML5 forms will block form submission until the form is valid this can be switched off by setting the `novalidate` attribute on the parent form element.
+
+    <form id="signup" novalidate>
+        <label>Email</label>
+        <input type="email" placeholder="e.g. ryan@example.net" required />
+	
+        <label>Phone</label> 
+        <input type="tel" id="tel" name="tel" pattern="\d{10}" />
+	
+        <label>Post code *</label>
+        <input type="number" min="1001" max="8000" required />
+	
+        <input type="submit" />
+    </form>
+	
+The above form regardless of attributes set won't validate and will submit, default behaviour is to block formm submission.
 	
 [http://thecssninja.com/javascript/H5F](http://thecssninja.com/javascript/H5F)
 
