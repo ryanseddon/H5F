@@ -12,8 +12,8 @@ var H5F = H5F || {};
 (function(d){
     
     var field = d.createElement("input"),
-        emailPatt = /^[a-z0-9_.%+-]+@[0-9a-z.-]+\.[a-z.]{2,6}$/i, 
-        urlPatt = /[a-z][-\.+a-z]*:\/\//i,
+        emailPatt = /^[a-z0-9_.%+\-]+@[0-9a-z.\-]+\.[a-z.]{2,6}$/i, 
+        urlPatt = /[a-z][\-\.+a-z]*:\/\//i,
         nodes = /^(input|select|textarea)$/i,
         isSubmit, usrPatt, curEvt, args, custMsg = "",
         // Methods
