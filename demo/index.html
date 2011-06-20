@@ -9,7 +9,7 @@
 	
 	<script type="text/javascript" src="../h5f.js"></script>
 	<script type="text/javascript">
-		H5F.listen(window,"load",function () {
+		window.onload = function() {
 			/*
 				Accepts HTMLFormElement, HTMLCollection of HTMLFormElements, or Array of HTMLFormElements.
 				Optional object of options: validClass, invalidClass, requiredClass
@@ -23,7 +23,7 @@
 				});
 			*/
 			H5F.setup(document.getElementById("signup"));
-		},false);
+		}
 	</script>
 	
 	<title>Validate those forms with CSS3 Basic UI module pseudo-classes, HTML5 Form attributes and consraint validation API</title>
@@ -53,12 +53,38 @@
 					<input type="tel" id="tel" name="tel" pattern="\d{10}" placeholder="Please enter a ten digit phone number" required />
 				</li>
 				<li>
+					<label for="date">Date *</label> 
+					<input type="date" id="date" name="date" required />
+				</li>
+				<li>
 					<label for="nickname">Nick name</label> 
-					<input type="text" id="nickname" name="nickname" pattern="\d{4,}" placeholder="A nickname that is atleast four characters" />
+					<input type="text" id="nickname" name="nickname" pattern="\w{4,}" placeholder="A nickname that is atleast four characters" />
 				</li>
 				<li>
 					<label for="other">Other</label> 
 					<input type="text" id="other" name="other" placeholder="Other information" />
+				</li>
+				<li class="radchecks">
+					<span class="label">Checkboxes</span>
+					<input type="checkbox" id="checkbox1" name="group1" required />
+					<label for="checkbox1">Checkbox 1</label> 
+					
+					<input type="checkbox" id="checkbox2" name="group1" required />
+					<label for="checkbox2">Checkbox 2</label> 
+					
+					<input type="checkbox" id="checkbox3" name="group1" required />
+					<label for="checkbox3">Checkbox 3</label> 
+				</li>
+				<li class="radchecks">
+					<span class="label">Radios</span>
+					<input type="radio" id="radio1" name="group2" required />
+					<label for="radio1">Radio 1</label> 
+					
+					<input type="radio" id="radio2" name="group2" />
+					<label for="radio2">Radio 2</label> 
+					
+					<input type="radio" id="radio3" name="group2" />
+					<label for="radio3">Radio 3</label> 
 				</li>
 			</ol>
 		</fieldset>
@@ -76,18 +102,19 @@
 				</li>
 				<li>
 					<label for="postcode">Post code *</label>
-					<input id="postcode" name="postcode" type="number" min="1001" max="8000" required maxlength="4" />
+					<input id="postcode" name="postcode" type="number" min="1001" max="8000" step="2" required maxlength="4" />
 				</li>
 				<li>
 					<label for="state">State</label>
-					<select name="state" id="state">
-						<option>ACT</option>
+					<select name="state" id="state" required>
+						<option>Choose state</option>
+						<option value="ACT">ACT</option>
 						<option>NSW</option>
 						<option>NT</option>
 						<option>QLD</option>
 						<option>SA</option>
 						<option>TAS</option>
-						<option selected>VIC</option>
+						<option>VIC</option>
 						<option>WA</option>
 					</select>
 				</li>

@@ -40,7 +40,7 @@ h2 { font-size: 14px; margin: 0 0 12px; }
 		margin: 0 0 12px;
 		position: relative;
 	}
-	#signup label
+	#signup label, #signup .label
 	{
 		width: 150px;
 		display: inline-block;
@@ -67,6 +67,13 @@ h2 { font-size: 14px; margin: 0 0 12px; }
 	#signup fieldset select		{ width: 401px; padding: 3px; }
 	#signup fieldset #postcode	{ padding: 3px; width: 400px; }
 	
+#signup fieldset .radchecks input {
+	width: auto;
+}
+#signup fieldset .radchecks label {
+	width: 105px;
+}
+		
 
 #signup input::-webkit-input-placeholder	{ color: #a9a9a9; }
 #signup input:-moz-placeholder			{ color: #a9a9a9; }
