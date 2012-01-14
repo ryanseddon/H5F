@@ -12,7 +12,7 @@ var H5F = H5F || {};
 (function(d){
     
     var field = d.createElement("input"),
-        emailPatt = /^[a-z0-9_.%+\-]+@[0-9a-z.\-]+\.[a-z.]{2,6}$/i, 
+        emailPatt = /^[a-zA-Z0-9.!#$%&'*+-\/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
         urlPatt = /[a-z][\-\.+a-z]*:\/\//i,
         nodes = /^(input|select|textarea)$/i,
         isSubmit, usrPatt, curEvt, args, custMsg = "",
@@ -119,14 +119,14 @@ var H5F = H5F || {};
             curEvt = e.type;
             if(!support()) { validity(el); }
             
-            if(el.validity.valid) {
+            if(el.validity.valid && el.value !== "" || el.value !== el.getAttribute("placeholder")) {
                 removeClass(el,[args.invalidClass,args.requiredClass]);
                 addClass(el,args.validClass);
             } else if(!events.test(curEvt)) {
                 if(el.validity.valueMissing) {
                     removeClass(el,[args.invalidClass,args.validClass]);
                     addClass(el,args.requiredClass);
-                } else {
+                } else if(!el.validity.valid) {
                     removeClass(el,[args.validClass,args.requiredClass]);
                     addClass(el,args.invalidClass);
                 }
