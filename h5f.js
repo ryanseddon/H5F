@@ -119,7 +119,7 @@ var H5F = H5F || {};
             curEvt = e.type;
             if(!support()) { validity(el); }
             
-            if(el.validity.valid && el.value !== "" || el.value !== el.getAttribute("placeholder")) {
+            if(el.validity.valid && el.value !== "" || el.value !== el.getAttribute("placeholder") && el.validity.valid) {
                 removeClass(el,[args.invalidClass,args.requiredClass]);
                 addClass(el,args.validClass);
             } else if(!events.test(curEvt)) {
