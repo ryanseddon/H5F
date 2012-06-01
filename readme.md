@@ -24,22 +24,26 @@ Also supported is the constraint validation API:
 
 ### Example
 
-    <form id="signup">
-        <label>Email</label>
-        <input type="email" placeholder="e.g. ryan@example.net" required />
-	
-        <label>Phone</label> 
-        <input type="tel" id="tel" name="tel" pattern="\d{10}" />
-	
-        <label>Post code *</label>
-        <input type="number" min="1001" max="8000" required />
-	
-        <input type="submit" />
-    </form>
+```html
+<form id="signup">
+	<label>Email</label>
+	<input type="email" placeholder="e.g. ryan@example.net" required />
+
+	<label>Phone</label> 
+	<input type="tel" id="tel" name="tel" pattern="\d{10}" />
+
+	<label>Post code *</label>
+	<input type="number" min="1001" max="8000" required />
+
+	<input type="submit" />
+</form>
+```
 
 On page load you run the H5F setup method:
 
-	H5F.setup(document.getElementById("signup"));
+```js
+H5F.setup(document.getElementById("signup"));
+```
 
 For a working demo download the demo files.
 
@@ -47,51 +51,63 @@ For a working demo download the demo files.
 
 With `setCustomValidity()` method you can set a custom error message on a field and it will be in an invalid state until the custom message is set back to an empty string.
 
-	document.getElementById("other").setCustomValidity("Please enter some information");
+```js
+document.getElementById("other").setCustomValidity("Please enter some information");
+```
 
 This field will be in a permanent invalid state, we can return the custom error message by using the `validationMessage` attribute
 
-	document.getElementById("other").validationMessage;
-	// "Please enter some information"
+```js
+document.getElementById("other").validationMessage;
+// "Please enter some information"
+```
 	
 A good use case for this functionality is a password comparison field.
 
-	var pass = document.getElementById("pass"),
-		cpass = document.getElementById("cpass");
-		
-	if(cpass.value !== pass.value) {
-		cpass.setCustomValidity("Your password doesn't match");
-	} else {
-		cpass.setCustomValidity("");
-	}
+```js
+var pass = document.getElementById("pass"),
+	cpass = document.getElementById("cpass");
+	
+if(cpass.value !== pass.value) {
+	cpass.setCustomValidity("Your password doesn't match");
+} else {
+	cpass.setCustomValidity("");
+}
+```
 
 #### Passing multiple forms
 
 You can pass an HTMLFormElement, HTMLCollection of HTMLFormElements, or Array of HTMLFormElements.
 
-    H5F.setup([document.getElementById("form1"),document.getElementById("form2"),document.getElementById("form3")]);
+```js
+H5F.setup([document.getElementById("form1"),document.getElementById("form2"),document.getElementById("form3")]);
+```
 
 #### Optional settings argument
 
 The `H5F.setup` method also accepts a second optional argument so you can specify the fields validation class names:
 
-    H5F.setup(document.getElementById("signup"), {
-        validClass: "valid",
-        invalidClass: "invalid",
-        requiredClass: "required",
-		placeholderClass: "placeholder"
-    });
+```js
+H5F.setup(document.getElementById("signup"), {
+	validClass: "valid",
+	invalidClass: "invalid",
+	requiredClass: "required",
+	placeholderClass: "placeholder"
+});
+```
 	
 #### Form submission blocking
 
 HTML5 forms will block form submission until the form is valid this can be switched off by setting the `novalidate` attribute on the parent form element.
 
-    <form id="signup" novalidate>
-        <label>Email</label>
-        <input type="email" placeholder="e.g. ryan@example.net" required />
-	
-        <input type="submit" />
-    </form>
+```html
+<form id="signup" novalidate>
+	<label>Email</label>
+	<input type="email" placeholder="e.g. ryan@example.net" required />
+
+	<input type="submit" />
+</form>
+```
 	
 The above form regardless of attributes set won't validate and will submit, default behaviour is to block form submission.
 	
