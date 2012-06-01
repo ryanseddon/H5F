@@ -97,4 +97,6 @@ The above form regardless of attributes set won't validate and will submit, defa
 	
 [http://thecssninja.com/javascript/H5F](http://thecssninja.com/javascript/H5F)
 
-Dual-licensed under the BSD and MIT licenses.
+### License
+Copyright (c) 2012 Ryan Seddon  
+Licensed under the MIT license.
