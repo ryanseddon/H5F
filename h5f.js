@@ -1,4 +1,4 @@
-/*! H5F - v1.0.0 - 2012-06-01
+/*! H5F - v1.0.0 - 2012-07-18
 * https://github.com/ryanseddon/H5F/
 * Copyright (c) 2012 Ryan Seddon; Licensed MIT */
 
@@ -65,7 +65,7 @@ var H5F = H5F || {};
             while(flen--) {
                 isRequired = !!(f[flen].attributes["required"]);
                 // Firefox includes fieldsets inside elements nodelist so we filter it out.
-                if(f[flen].nodeName !== "FIELDSET") {
+                if(f[flen].nodeName.toLowerCase() !== "fieldset") {
                     validity(f[flen]); // Add validity object to field
                 }
             }
@@ -138,7 +138,7 @@ var H5F = H5F || {};
     checkValidity = function (el) {
         var f, ff, isRequired, hasPattern, invalid = false;
         
-        if(el.nodeName === "FORM") {
+        if(el.nodeName.toLowerCase() === "form") {
             f = el.elements;
             
             for(var i = 0,len = f.length;i < len;i++) {
@@ -147,7 +147,7 @@ var H5F = H5F || {};
                 isRequired = !!(ff.attributes["required"]);
                 hasPattern = !!(ff.attributes["pattern"]);
                 
-                if(ff.nodeName !== "FIELDSET" && (isRequired || hasPattern && isRequired)) {
+                if(ff.nodeName.toLowerCase() !== "fieldset" && (isRequired || hasPattern && isRequired)) {
                     checkField(ff);
                     if(!ff.validity.valid && !invalid) {
                         if(isSubmit) { // If it's not a submit event the field shouldn't be focused
