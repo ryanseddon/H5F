@@ -1,5 +1,5 @@
 {
-  "name": "H5F",
+  "name": "h5f",
   "title": "H5F",
   "description": "a JavaScript library that allows you to use the HTML5 Forms chapters new field input types, attributes and constraint validation API in non-supporting browsers.",
   "version": "1.0.0",
