@@ -73,34 +73,41 @@ var H5F = H5F || {};
     };
     validity = function(el) {
         var elem = el,
-            missing = valueMissing(elem),
+            evt = /^(input|keyup)$/i,
             attrs = { 
                 type: elem.getAttribute("type"), 
                 pattern: elem.getAttribute("pattern"), 
                 placeholder: elem.getAttribute("placeholder") 
-            },
-            isType = /^(email|url)$/i,
-            evt = /^(input|keyup)$/i,
-            fType = ((isType.test(attrs.type)) ? attrs.type : ((attrs.pattern) ? attrs.pattern : false)),
-            patt = pattern(elem,fType),
-            step = range(elem,"step"),
-            min = range(elem,"min"),
-            max = range(elem,"max"),
-            customError = (custMsg !== "");
+            };
         
-        elem.checkValidity = function() { return checkValidity.call(this,elem); };
-        elem.setCustomValidity = function(msg) { setCustomValidity.call(elem,msg); };
-        elem.validationMessage = custMsg;
-        
-        elem.validity = {
-            valueMissing: missing,
-            patternMismatch: patt,
-            rangeUnderflow: min,
-            rangeOverflow: max,
-            stepMismatch: step,
-            customError: customError,
-            valid: (!missing && !patt && !step && !min && !max && !customError)
-        };
+        if (elem.disabled) {
+            elem.validity = {
+              valid: true
+            };
+        } else {
+            var missing = valueMissing(elem),
+                isType = /^(email|url)$/i,
+                fType = ((isType.test(attrs.type)) ? attrs.type : ((attrs.pattern) ? attrs.pattern : false)),
+                patt = pattern(elem,fType),
+                step = range(elem,"step"),
+                min = range(elem,"min"),
+                max = range(elem,"max"),
+                customError = (custMsg !== "");
+            
+            elem.checkValidity = function() { return checkValidity.call(this,elem); };
+            elem.setCustomValidity = function(msg) { setCustomValidity.call(elem,msg); };
+            elem.validationMessage = custMsg;
+            
+            elem.validity = {
+                valueMissing: missing,
+                patternMismatch: patt,
+                rangeUnderflow: min,
+                rangeOverflow: max,
+                stepMismatch: step,
+                customError: customError,
+                valid: (!missing && !patt && !step && !min && !max && !customError)
+            };
+        }
         
         if(attrs.placeholder && !evt.test(curEvt)) { placeholder(elem); }
     };
