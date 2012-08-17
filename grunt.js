@@ -29,9 +29,6 @@ module.exports = function(grunt) {
     lint: {
       files: ['grunt.js', 'src/**/*.js', 'test/**/*.js']
     },
-    scripts: {
-      test: "grunt travis --verbose"
-    },
     watch: {
       files: '<config:lint.files>',
       tasks: 'lint qunit'
