@@ -7,6 +7,7 @@
     email = document.getElementById("email"),
     url = document.getElementById("url"),
     postcode = document.getElementById("postcode"),
+    chkbox = document.getElementById("chkbox"),
     nickname = document.getElementById("nickname");
   
   test("H5F global", function() {
@@ -25,6 +26,25 @@
     ok( !formElem.validity.stepMismatch, "stepMismatch attribute exists" );
     ok( formElem.validity.valid, "valid attribute exists" );
     ok( !formElem.validity.valueMissing, "valueMissing attribute exists" );
+  });
+
+  module("Checkboxes/radios");
+
+  // Trigger form validation
+  form.checkValidity();
+
+  test("have correct properties", function() {
+    ok( chkbox.validity, "Checkbox has validity property" );
+    equal( chkbox.validity.valid, false, "Checkbox is currently invalid" );
+  });
+
+  test("checked vs unchecked state", function(){
+    equal(chkbox.className, "required", "Checkbox gets class name of 'required' applied on form validation");
+
+    // Check the checkbox
+    chkbox.checked = true;
+    chkbox.checkValidity();
+    ok( chkbox.validity.valid, "Checkbox is valid" );
   });
   
   module("Form validity");

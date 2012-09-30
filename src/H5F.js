@@ -1,10 +1,6 @@
-/*
- * H5F
- * https://github.com/ryanseddon/H5F/
- *
- * Copyright (c) 2012 Ryan Seddon
- * Licensed under the MIT license.
- */
+/*! H5F - v1.0.0 - 2012-07-18
+* https://github.com/ryanseddon/H5F/
+* Copyright (c) 2012 Ryan Seddon; Licensed MIT */
 
 var H5F = H5F || {};
 
@@ -55,6 +51,7 @@ var H5F = H5F || {};
         listen(form,"input",checkField,true);
         listen(form,"keyup",checkField,true);
         listen(form,"focus",checkField,true);
+        listen(form,"change",checkField,true);
         
         listen(form,"submit",function(e){
             isSubmit = true;
@@ -63,7 +60,7 @@ var H5F = H5F || {};
             }
         },false);
         
-        if(!support()) { 
+        if(!support()) {
             form.checkValidity = function() { return checkValidity(form); };
             
             while(flen--) {
@@ -78,10 +75,10 @@ var H5F = H5F || {};
     validity = function(el) {
         var elem = el,
             missing = valueMissing(elem),
-            attrs = { 
-                type: elem.getAttribute("type"), 
-                pattern: elem.getAttribute("pattern"), 
-                placeholder: elem.getAttribute("placeholder") 
+            attrs = {
+                type: elem.getAttribute("type"),
+                pattern: elem.getAttribute("pattern"),
+                placeholder: elem.getAttribute("placeholder")
             },
             isType = /^(email|url)$/i,
             evt = /^(input|keyup)$/i,
@@ -110,15 +107,19 @@ var H5F = H5F || {};
     };
     checkField = function (e) {
         var el = getTarget(e) || e, // checkValidity method passes element not event
-            events = /^(input|keyup|focusin|focus)$/i,
+            events = /^(input|keyup|focusin|focus|change)$/i,
             ignoredTypes = /^(submit|image|button|reset)$/i,
+            specialTypes = /^(checkbox|radio)$/i,
             checkForm = true;
         
         if(nodes.test(el.nodeName) && !(ignoredTypes.test(el.type) || ignoredTypes.test(el.nodeName))) {
             curEvt = e.type;
-            if(!support()) { validity(el); }
-            
-            if(el.validity.valid && el.value !== "" || el.value !== el.getAttribute("placeholder") && el.validity.valid) {
+
+            if(!support()) {
+                validity(el);
+            }
+
+            if(el.validity.valid && (el.value !== "" || specialTypes.test(el.type)) || (el.value !== el.getAttribute("placeholder") && el.validity.valid)) {
                 removeClass(el,[args.invalidClass,args.requiredClass]);
                 addClass(el,args.validClass);
             } else if(!events.test(curEvt)) {
@@ -192,7 +193,7 @@ var H5F = H5F || {};
             
             usrPatt = new RegExp('^(?:' + type + ')$');
             
-            if(val === placeholder) {    
+            if(val === placeholder) {
                 return true;
             } else if(val === "") {
                 return false;
@@ -237,8 +238,8 @@ var H5F = H5F || {};
                 return (el.getAttribute("min")) ? (val < min) : false;
             } else if(type === "max") {
                 return (el.getAttribute("max")) ? (val > max) : false;
-            } 
-        } else if(el.getAttribute("type") === "number") { 
+            }
+        } else if(el.getAttribute("type") === "number") {
             return true;
         } else {
             return false;
@@ -309,8 +310,7 @@ var H5F = H5F || {};
         if (e.className) {
             if (e.className === c) {
                 e.className = '';
-            }
-            else {        
+            } else {
                 while(arr--) {
                     re = new RegExp('(^|\\s)' + ((len > 1) ? c[arr] : c) + '(\\s|$)');
                     m = e.className.match(re);
