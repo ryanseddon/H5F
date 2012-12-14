@@ -12,8 +12,17 @@ var H5F = H5F || {};
         nodes = /^(input|select|textarea)$/i,
         isSubmit, usrPatt, curEvt, args, custMsg = "",
         // Methods
-        setup, validation, validity, checkField, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod;
+        setupForm, setup, validation, validity, checkField, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod;
     
+        
+    setupForm = function(form) {
+        var f = form.elements,
+            flen = f.length;
+        while(flen--) {
+            checkField(f[flen]);
+        }
+    };
+
     setup = function(form,settings) {
         var isCollection = !form.nodeType || false;
         
@@ -35,12 +44,14 @@ var H5F = H5F || {};
         if(isCollection) {
             for(var k=0,len=form.length;k<len;k++) {
                 validation(form[k]);
+                setupForm(form[k]);
             }
         } else {
             validation(form);
+            setupForm(form);
         }
     };
-    
+
     validation = function(form) {
         var f = form.elements,
             flen = f.length,
