@@ -35,12 +35,24 @@ var H5F = H5F || {};
         if(isCollection) {
             for(var k=0,len=form.length;k<len;k++) {
                 validation(form[k]);
+                setupForm(form[k]);
             }
         } else {
             validation(form);
+            setupForm(form);
         }
     };
     
+    setupForm = function(form) {
+        console.log("setupForm: " + form);
+        var f = form.elements,
+            flen = f.length;
+        while(flen--) {
+            console.log("check: " + f[flen]);
+            checkField(f[flen]);
+        }
+    };
+
     validation = function(form) {
         var f = form.elements,
             flen = f.length,
