@@ -14,6 +14,15 @@ var H5F = H5F || {};
         // Methods
         setup, validation, validity, checkField, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod;
     
+        
+    setupForm = function(form) {
+        var f = form.elements,
+            flen = f.length;
+        while(flen--) {
+            checkField(f[flen]);
+        }
+    };
+
     setup = function(form,settings) {
         var isCollection = !form.nodeType || false;
         
@@ -40,16 +49,6 @@ var H5F = H5F || {};
         } else {
             validation(form);
             setupForm(form);
-        }
-    };
-    
-    setupForm = function(form) {
-        console.log("setupForm: " + form);
-        var f = form.elements,
-            flen = f.length;
-        while(flen--) {
-            console.log("check: " + f[flen]);
-            checkField(f[flen]);
         }
     };
 
