@@ -12,7 +12,7 @@ var H5F = H5F || {};
         nodes = /^(input|select|textarea)$/i,
         isSubmit, usrPatt, curEvt, args, custMsg = "",
         // Methods
-        setup, validation, validity, checkField, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod;
+        setupForm, setup, validation, validity, checkField, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod;
     
         
     setupForm = function(form) {
