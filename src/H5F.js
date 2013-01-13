@@ -10,11 +10,11 @@ var H5F = H5F || {};
         emailPatt = /^[a-zA-Z0-9.!#$%&'*+-\/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
         urlPatt = /[a-z][\-\.+a-z]*:\/\//i,
         nodes = /^(input|select|textarea)$/i,
-        isSubmit, usrPatt, curEvt, args, custMsg = "",
+        isSubmit, bypassSubmit, usrPatt, curEvt, args, custMsg = "",
         // Methods
-        setup, validation, validity, checkField, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod;
+        setup, validation, validity, checkField, bypassChecks, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod;
     
-    setup = function(form,settings) {
+    setup = function(form, settings) {
         var isCollection = !form.nodeType || false;
         
         var opts = {
@@ -44,7 +44,8 @@ var H5F = H5F || {};
     validation = function(form) {
         var f = form.elements,
             flen = f.length,
-            isRequired, noValidate = !!(form.attributes["novalidate"]);
+            isRequired,
+            noValidate = !!(form.attributes["novalidate"]);
         
         listen(form,"invalid",checkField,true);
         listen(form,"blur",checkField,true);
@@ -52,11 +53,14 @@ var H5F = H5F || {};
         listen(form,"keyup",checkField,true);
         listen(form,"focus",checkField,true);
         listen(form,"change",checkField,true);
+        listen(form,"click",bypassChecks,true);
         
         listen(form,"submit",function(e){
             isSubmit = true;
-            if(!noValidate && !form.checkValidity()) {
-                preventActions(e);
+            if(!bypassSubmit) {
+                if(!noValidate && !form.checkValidity()) {
+                    preventActions(e);
+                }
             }
         },false);
         
@@ -105,7 +109,7 @@ var H5F = H5F || {};
         
         if(attrs.placeholder && !evt.test(curEvt)) { placeholder(elem); }
     };
-    checkField = function (e) {
+    checkField = function(e) {
         var el = getTarget(e) || e, // checkValidity method passes element not event
             events = /^(input|keyup|focusin|focus|change)$/i,
             ignoredTypes = /^(submit|image|button|reset)$/i,
@@ -140,7 +144,7 @@ var H5F = H5F || {};
             }
         }
     };
-    checkValidity = function (el) {
+    checkValidity = function(el) {
         var f, ff, isRequired, hasPattern, invalid = false;
         
         if(el.nodeName.toLowerCase() === "form") {
@@ -168,13 +172,22 @@ var H5F = H5F || {};
             return el.validity.valid;
         }
     };
-    setCustomValidity = function (msg) {
+    setCustomValidity = function(msg) {
         var el = this;
         custMsg = msg;
             
         el.validationMessage = custMsg;
     };
     
+    bypassChecks = function(e) {
+        // handle formnovalidate attribute
+        var el = getTarget(e);
+
+        if(el.attributes["formnovalidate"] && el.type === "submit") {
+            bypassSubmit = true;
+        }
+    };
+
     support = function() {
         return (isHostMethod(field,"validity") && isHostMethod(field,"checkValidity"));
     };
@@ -223,7 +236,7 @@ var H5F = H5F || {};
             }
         }
     };
-    range = function(el,type) {
+    range = function(el, type) {
         // Emulate min, max and step
         var min = parseInt(el.getAttribute("min"),10) || 0,
             max = parseInt(el.getAttribute("max"),10) || false,
