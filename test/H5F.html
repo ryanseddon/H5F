@@ -66,6 +66,10 @@
     H5F.setup(document.getElementById("qunit-fixture"));
   </script>
   <script src="../libs/qunit/qunit.js"></script>
+  <script src="../libs/qunit/qunit-tap.js"></script>
+  <script type="text/javascript">
+    qunitTap(QUnit, function() { console.log.apply(console, arguments); });
+  </script>
   <script src="H5F_test.js"></script>
 </body>
 </html>

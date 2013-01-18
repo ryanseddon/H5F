@@ -18,11 +18,21 @@
   "licenses": [
     {
       "type": "MIT",
-      "url": "https://github.com/ryanseddon/H5F//blob/master/LICENSE-MIT"
+      "url": "https://github.com/ryanseddon/H5F/blob/master/LICENSE-MIT"
     }
   ],
   "dependencies": {
     "grunt": "~0.3.9"
+  },
+  "testling": {
+  	"file": "test/browser.js",
+  	"browsers": { 
+  		"ie": [ 6, 7, 8, 9, 10 ], 
+      "ff": [ "latest", "nightly" ], 
+      "chrome": [ "latest", "canary" ], 
+      "safari": [ "latest" ],
+      "opera": [ "latest", "next" ]
+    }
   },
   "scripts": {
       "test": "grunt travis --verbose"
