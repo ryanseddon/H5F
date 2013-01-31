@@ -10,7 +10,7 @@ var H5F = H5F || {};
         emailPatt = /^[a-zA-Z0-9.!#$%&'*+-\/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
         urlPatt = /[a-z][\-\.+a-z]*:\/\//i,
         nodes = /^(input|select|textarea)$/i,
-        isSubmit, bypassSubmit, usrPatt, curEvt, args, custMsg = "",
+        isSubmit, bypassSubmit, usrPatt, curEvt, args,
         // Methods
         setup, validation, validity, checkField, bypassChecks, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod;
     
@@ -91,11 +91,10 @@ var H5F = H5F || {};
             step = range(elem,"step"),
             min = range(elem,"min"),
             max = range(elem,"max"),
-            customError = (custMsg !== "");
+            customError = !( elem.validationMessage === "" || elem.validationMessage === undefined );
         
         elem.checkValidity = function() { return checkValidity.call(this,elem); };
         elem.setCustomValidity = function(msg) { setCustomValidity.call(elem,msg); };
-        elem.validationMessage = custMsg;
         
         elem.validity = {
             valueMissing: missing,
@@ -174,9 +173,8 @@ var H5F = H5F || {};
     };
     setCustomValidity = function(msg) {
         var el = this;
-        custMsg = msg;
             
-        el.validationMessage = custMsg;
+        el.validationMessage = msg;
     };
     
     bypassChecks = function(e) {
