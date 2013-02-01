@@ -49,7 +49,8 @@ module.exports = function(grunt) {
         regexdash: true
       },
       globals: {
-        jQuery: true
+        require: true,
+        module: true
       }
     },
     uglify: {}
