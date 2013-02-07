@@ -154,8 +154,9 @@ var H5F = H5F || {};
                 
                 isRequired = !!(ff.attributes["required"]);
                 hasPattern = !!(ff.attributes["pattern"]);
+                isDisabled = !!(ff.attributes["disabled"]);
                 
-                if(ff.nodeName.toLowerCase() !== "fieldset" && (isRequired || hasPattern && isRequired)) {
+                if(ff.nodeName.toLowerCase() !== "fieldset" && !isDisabled && (isRequired || hasPattern && isRequired)) {
                     checkField(ff);
                     if(!ff.validity.valid && !invalid) {
                         if(isSubmit) { // If it's not a submit event the field shouldn't be focused
