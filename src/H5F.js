@@ -205,7 +205,7 @@ var H5F = H5F || {};
             usrPatt = new RegExp('^(?:' + type + ')$');
             
             if(val === placeholder) {
-                return true;
+                return false;
             } else if(val === "") {
                 return false;
             } else {
@@ -263,8 +263,9 @@ var H5F = H5F || {};
     };
     valueMissing = function(el) {
         var placeholder = el.getAttribute("placeholder"),
+            specialTypes = /^(checkbox|radio)$/i,
             isRequired = !!(el.attributes["required"]);
-        return !!(isRequired && (el.value === "" || el.value === placeholder));
+        return !!(isRequired && (el.value === "" || el.value === placeholder || (specialTypes.test(el.type) && ! el.checked)));
     };
     
     /* Util methods */
