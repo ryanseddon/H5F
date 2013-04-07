@@ -1,6 +1,6 @@
-/*! H5F - v1.0.0 - 2012-07-18
+/*! H5F
 * https://github.com/ryanseddon/H5F/
-* Copyright (c) 2012 Ryan Seddon; Licensed MIT */
+* Copyright (c) Ryan Seddon | Licensed MIT */
 
 var H5F = H5F || {};
 

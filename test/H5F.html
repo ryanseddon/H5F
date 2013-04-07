@@ -52,6 +52,10 @@
           <input type="text" id="other" name="other" placeholder="Other information" />
         </li>
         <li>
+          <label for="disabled">Other</label> 
+          <input type="text" id="disabled" name="disabled" required disabled placeholder="Other information" />
+        </li>
+        <li>
           <label for="gen">Generic</label> 
           <input type="text" id="gen" name="gen" placeholder="Other information" />
         </li>
@@ -68,7 +72,11 @@
   <script src="../libs/qunit/qunit.js"></script>
   <script src="../libs/qunit/qunit-tap.js"></script>
   <script type="text/javascript">
-    qunitTap(QUnit, function() { console.log.apply(console, arguments); });
+    qunitTap(QUnit, function() { 
+      try { 
+        console.log.apply(console, arguments); 
+      } catch(e) {}
+      });
   </script>
   <script src="H5F_test.js"></script>
 </body>

@@ -1,9 +1,7 @@
-/*global QUnit:false, module:false, test:false, asyncTest:false, expect:false*/
-/*global start:false, stop:false ok:false, equal:false, notEqual:false, deepEqual:false*/
-/*global notDeepEqual:false, strictEqual:false, notStrictEqual:false, raises:false*/
 (function() {
   var form = document.getElementById("qunit-fixture"),
     formElem = document.getElementById("other"),
+    disabledElem = document.getElementById("disabled"),
     email = document.getElementById("email"),
     url = document.getElementById("url"),
     postcode = document.getElementById("postcode"),
@@ -46,13 +44,20 @@
     chkbox.checkValidity();
     ok( chkbox.validity.valid, "Checkbox is valid" );
   });
-  
+
   module("Form validity");
   
   test("checkValidity method", function() {
     ok( form.checkValidity, "checkValidity method exists on parent form" );
     
     ok( formElem.checkValidity, "checkValidity method exists on element" );
+  });
+
+  test("disabled element", function() {
+    equal( disabledElem.checkValidity(), true, "Disabled element should be exempt from validation" );
+    ok( disabledElem.disabled, "Disabled element should return true on disabled property" );
+    ok( disabledElem.validity.valid, "Disabled element should return true on disabled property even though it's invalid" );
+    ok( !disabledElem.validity.valueMissing, "Disabled element should be false on it's actual error if it weren't disabled" );
   });
   
   module("Custom validation");
