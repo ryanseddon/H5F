@@ -30,7 +30,7 @@
     "grunt-contrib-watch": "~0.3.1"
   },
   "testling": {
-  	"file": "test/browser.js",
+  	"files": "test/browser.js",
   	"browsers": { 
   		"ie": [ 6, 7, 8, 9, 10 ], 
       "ff": [ "latest", "nightly" ], 
