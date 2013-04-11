@@ -6,7 +6,9 @@
     url = document.getElementById("url"),
     postcode = document.getElementById("postcode"),
     chkbox = document.getElementById("chkbox"),
-    nickname = document.getElementById("nickname");
+    nickname = document.getElementById("nickname"),
+    radioFemale = document.getElementById("female"),
+    radioMale = document.getElementById("male");
   
   test("H5F global", function() {
     ok(window.H5F, 'H5F global exists');
@@ -33,6 +35,7 @@
 
   test("have correct properties", function() {
     ok( chkbox.validity, "Checkbox has validity property" );
+    chkbox.checkValidity();
     equal( chkbox.validity.valid, false, "Checkbox is currently invalid" );
   });
 
@@ -43,6 +46,25 @@
     chkbox.checked = true;
     chkbox.checkValidity();
     ok( chkbox.validity.valid, "Checkbox is valid" );
+  });
+
+  test("radio buttons  have correct properties", function() {
+    ok( radioFemale.validity, "Female Radio button has validity propery");
+    radioFemale.checkValidity();
+    equal( radioFemale.validity.valid, false, "Female RadioButton is currently invalid ");
+    ok( radioMale.validity, "Male Radio button has validity propery");
+    radioMale.checkValidity();
+    equal( radioMale.validity.valid, false, "Female RadioButton is currently invalid ");
+  });
+  test("check validity of radio buttons if one option is checked", function(){
+    equal(radioFemale.className, "required", "Female Radio button gets the class name of 'require' applied on form validation");
+
+    // Check male validity if female is checked
+    radioFemale.checked = true;
+    radioFemale.checkValidity();
+    ok( radioFemale.validity, "Female Radio button is valid" );
+    radioMale.checkValidity();
+    ok( radioMale.validity, "Male Radio button is valid when Female is checked" );
   });
 
   module("Form validity");
