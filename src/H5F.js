@@ -12,7 +12,7 @@ var H5F = H5F || {};
         nodes = /^(input|select|textarea)$/i,
         isSubmit, bypassSubmit, usrPatt, curEvt, args,
         // Methods
-        setup, validation, validity, checkField, bypassChecks, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod;
+        setup, validation, validity, checkField, bypassChecks, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod, isSiblingChecked;
     
     setup = function(form, settings) {
         var isCollection = !form.nodeType || false;
@@ -265,7 +265,7 @@ var H5F = H5F || {};
         var placeholder = el.getAttribute("placeholder"),
             specialTypes = /^(checkbox|radio)$/i,
             isRequired = !!(el.attributes["required"]);
-        return !!(isRequired && (el.value === "" || el.value === placeholder || (specialTypes.test(el.type) && ! el.checked)));
+        return !!(isRequired && (el.value === "" || el.value === placeholder || (specialTypes.test(el.type) && !isSiblingChecked(el))));
     };
     
     /* Util methods */
@@ -335,7 +335,17 @@ var H5F = H5F || {};
         var t = typeof o[m], reFeaturedMethod = new RegExp('^function|object$', 'i');
         return !!((reFeaturedMethod.test(t) && o[m]) || t === 'unknown');
     };
-    
+    /* Checking if one of the radio siblings is checked */
+    isSiblingChecked = function(el) {
+        var siblings = document.getElementsByName(el.name);
+        for(var i=0; i<siblings.length; i++){
+            if(siblings[i].checked){
+                return true;
+            }
+        }
+        return false;
+    };
+
     // Since all methods are only used internally no need to expose globally
     window["H5F"] = {
         setup: setup
