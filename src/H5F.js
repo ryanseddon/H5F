@@ -265,7 +265,7 @@ var H5F = H5F || {};
         var placeholder = el.getAttribute("placeholder"),
             specialTypes = /^(checkbox|radio)$/i,
             isRequired = !!(el.attributes["required"]);
-        return !!(isRequired && (el.value === "" || el.value === placeholder || (specialTypes.test(el.type) && ! isSiblingChecked(el))));
+        return !!(isRequired && (el.value === "" || el.value === placeholder || (specialTypes.test(el.type) && !isSiblingChecked(el))));
     };
     
     /* Util methods */
