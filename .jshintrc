@@ -13,6 +13,7 @@
   "regexdash": true,
   "sub": true,
   "globals": {
+    "define": true,
     "require": true,
     "module": true,
     "QUnit": true,
