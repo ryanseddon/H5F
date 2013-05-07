@@ -2,11 +2,18 @@
 * https://github.com/ryanseddon/H5F/
 * Copyright (c) Ryan Seddon | Licensed MIT */
 
-var H5F = H5F || {};
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(factory);
+    } else {
+        // Browser globals
+        root.H5F = factory();
+    }
+}(this, function () {
 
-(function(d){
-    
-    var field = d.createElement("input"),
+    var d = document,
+        field = d.createElement("input"),
         emailPatt = /^[a-zA-Z0-9.!#$%&'*+-\/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
         urlPatt = /[a-z][\-\.+a-z]*:\/\//i,
         nodes = /^(input|select|textarea)$/i,
@@ -347,8 +354,8 @@ var H5F = H5F || {};
     };
 
     // Since all methods are only used internally no need to expose globally
-    window["H5F"] = {
+    return {
         setup: setup
     };
 
-}(document));
+}));
