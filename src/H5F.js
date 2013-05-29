@@ -28,7 +28,9 @@
             validClass : "valid",
             invalidClass : "error",
             requiredClass : "required",
-            placeholderClass : "placeholder"
+            placeholderClass : "placeholder",
+            onSubmit : Function.prototype,
+            onInvalid : Function.prototype
         };
 
         if(typeof settings === "object") {
@@ -64,11 +66,11 @@
         
         listen(form,"submit",function(e){
             isSubmit = true;
-            if(!bypassSubmit) {
-                if(!noValidate && !form.checkValidity()) {
-                    preventActions(e);
-                }
+            if(!bypassSubmit && !noValidate && !form.checkValidity()) {
+                preventActions(e);
+                return;
             }
+            args.onSubmit.call(form, e);
         },false);
         
         if(!support()) {
@@ -169,6 +171,7 @@
                             ff.focus();
                         }
                         invalid = true;
+                        args.onInvalid.call(el, ff);
                     }
                 }
             }
