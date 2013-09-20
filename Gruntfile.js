@@ -64,11 +64,13 @@ module.exports = function(grunt) {
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'qunit', 'uglify']);
+
+  // Sauce labs CI task
+  grunt.registerTask("sauce", ["connect", "saucelabs-qunit"]);
   
   // Travis CI task.
-  grunt.registerTask('travis', ['jshint', 'qunit']);
+  grunt.registerTask('travis', ['jshint', 'sauce']);
 
-  grunt.registerTask("dev", ["connect", "watch"]);
-  grunt.registerTask("test", ["connect", "saucelabs-qunit"]);
+  
 
 };
