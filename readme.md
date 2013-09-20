@@ -1,7 +1,7 @@
 H5F [![Build Status](https://secure.travis-ci.org/ryanseddon/H5F.png?branch=master)](http://travis-ci.org/ryanseddon/H5F)
 ===
 
-[![browser support](http://ci.testling.com/ryanseddon/H5F.png)](http://ci.testling.com/ryanseddon/H5F)
+[![Selenium Test Status](https://saucelabs.com/browser-matrix/rseddon.svg)](https://saucelabs.com/u/rseddon)
 
 ### a JavaScript library that allows you to use the HTML5 Forms chapters new field input types, attributes and constraint validation API in non-supporting browsers.
 

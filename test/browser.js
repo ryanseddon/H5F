@@ -1,1 +1,0 @@
-document.body.innerHTML = require('./H5F.html.js');

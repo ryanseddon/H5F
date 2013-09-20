@@ -1,0 +1,33 @@
+[{
+    "browserName": "firefox",
+    "platform": "WIN7"
+}, {
+    "browserName": "safari",
+    "platform": "OS X 10.8"
+}, {
+    "browserName": "chrome",
+    "platform": "linux"
+}, {
+    "browserName": "opera",
+    "platform": "WIN7"
+}, {
+    "browserName": "internet explorer",
+    "platform": "WIN8",
+    "version": "10"
+}, {
+    "browserName": "internet explorer",
+    "platform": "VISTA",
+    "version": "9"
+}, {
+    "browserName": "internet explorer",
+    "platform": "XP",
+    "version": "8"
+}, {
+    "browserName": "internet explorer",
+    "platform": "XP",
+    "version": "7"
+}, {
+    "browserName": "internet explorer",
+    "platform": "XP",
+    "version": "6"
+}]
