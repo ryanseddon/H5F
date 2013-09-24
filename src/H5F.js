@@ -25,9 +25,18 @@
         var isCollection = !form.nodeType || false;
         
         var opts = {
-            validClass : "valid",
-            invalidClass : "error",
-            requiredClass : "required",
+            validEvent : function(el) {
+                removeClass(el,['invalid', 'required']);
+                addClass(el, 'valid');
+            },
+            invalidEvent : function(el) {
+                removeClass(el,['valid', 'required']);
+                addClass(el, 'invalid');
+            },
+            requiredEvent : function(el) {
+                removeClass(el,['invalid', 'valid']);
+                addClass(el, 'required');
+            },
             placeholderClass : "placeholder"
         };
 
@@ -130,17 +139,15 @@
             }
 
             if(el.validity.valid && (el.value !== "" || specialTypes.test(el.type)) || (el.value !== el.getAttribute("placeholder") && el.validity.valid)) {
-                removeClass(el,[args.invalidClass,args.requiredClass]);
-                addClass(el,args.validClass);
+                args.validEvent(el);
             } else if(!events.test(curEvt)) {
                 if(el.validity.valueMissing) {
-                    removeClass(el,[args.invalidClass,args.validClass]);
-                    addClass(el,args.requiredClass);
+                    args.requiredEvent(el);
                 } else if(!el.validity.valid) {
-                    removeClass(el,[args.validClass,args.requiredClass]);
-                    addClass(el,args.invalidClass);
+                    args.invalidEvent(el);
                 }
             } else if(el.validity.valueMissing) {
+                // TODO: Do we need a "reset" event?
                 removeClass(el,[args.requiredClass,args.invalidClass,args.validClass]);
             }
             if(curEvt === "input" && checkForm) {
