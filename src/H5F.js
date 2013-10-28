@@ -3,8 +3,8 @@
 * Copyright (c) Ryan Seddon | Licensed MIT */
 
 (function (root, factory) {
-    if (typeof define === 'function' && define.amd) {
-        // AMD. Register as an anonymous module.
+    if (typeof define === 'function' && (define.amd || define.cmd)) {
+        // AMD or CMD. Register as an anonymous module.
         define(factory);
     } else {
         // Browser globals
@@ -17,12 +17,11 @@
         emailPatt = /^[a-zA-Z0-9.!#$%&'*+-\/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
         urlPatt = /[a-z][\-\.+a-z]*:\/\//i,
         nodes = /^(input|select|textarea)$/i,
-        isSubmit, bypassSubmit, usrPatt, curEvt, args,
+        $, btnSubmit, isSubmit, bypassSubmit, usrPatt, curEvt, args,
         // Methods
-        setup, validation, validity, checkField, bypassChecks, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod, isSiblingChecked;
+        setup, validation, validity, checkField, bypassChecks, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, hasClass, addClass, removeClass, isHostMethod, isSiblingChecked;
     
     setup = function(form, settings) {
-        var isCollection = !form.nodeType || false;
         
         var opts = {
             validClass : "valid",
@@ -39,12 +38,12 @@
         
         args = settings || opts;
         
-        if(isCollection) {
-            for(var k=0,len=form.length;k<len;k++) {
+        if(form && form.nodeType) {
+            validation(form);
+        } else if(form = form || d.forms){
+            for(var k=0;k<form.length;k++) {
                 validation(form[k]);
             }
-        } else {
-            validation(form);
         }
     };
     
@@ -53,7 +52,8 @@
             flen = f.length,
             isRequired,
             noValidate = !!(form.attributes["novalidate"]);
-        
+        $ = args.jQuery || window.jQuery;
+        listen(form,"propertychange",checkField,true);
         listen(form,"invalid",checkField,true);
         listen(form,"blur",checkField,true);
         listen(form,"input",checkField,true);
@@ -65,10 +65,11 @@
         listen(form,"submit",function(e){
             isSubmit = true;
             if(!bypassSubmit) {
-                if(!noValidate && !form.checkValidity()) {
+                if(btnSubmit && !noValidate && !form.checkValidity()) {
                     preventActions(e);
                 }
             }
+            btnSubmit = false;
         },false);
         
         if(!support()) {
@@ -117,7 +118,7 @@
     };
     checkField = function(e) {
         var el = getTarget(e) || e, // checkValidity method passes element not event
-            events = /^(input|keyup|focusin|focus|change)$/i,
+            events = /^(input|keyup|focusin|focus|change|propertychange)$/i,
             ignoredTypes = /^(submit|image|button|reset)$/i,
             specialTypes = /^(checkbox|radio)$/i,
             checkForm = true;
@@ -164,6 +165,7 @@
                 
                 if(ff.nodeName.toLowerCase() !== "fieldset" && (isRequired || hasPattern && isRequired)) {
                     checkField(ff);
+                    triggerInvalid(ff);
                     if(!ff.validity.valid && !invalid) {
                         if(isSubmit) { // If it's not a submit event the field shouldn't be focused
                             ff.focus();
@@ -175,21 +177,37 @@
             return !invalid;
         } else {
             checkField(el);
+            triggerInvalid(el);
             return el.validity.valid;
         }
     };
+    triggerInvalid = function(el) {
+        // trigger invalid event
+        if((!isSubmit || btnSubmit) && !el.validity.valid){
+            try {
+                /* FF & Other Browsers */
+                var e = d.createEvent("HTMLEvents");
+                e.initEvent("invalid", false, true);
+                el.dispatchEvent(e);
+            }catch(ex){
+                /* Internet Explorer priority use jQuery way */
+                if($) {
+                    $(el).trigger("invalid");
+                }
+            }
+        }
+    };
     setCustomValidity = function(msg) {
-        var el = this;
-            
-        el.validationMessage = msg;
+        this.validationMessage = msg;
+        checkField(this);
     };
     
     bypassChecks = function(e) {
         // handle formnovalidate attribute
         var el = getTarget(e);
-
-        if(el.attributes["formnovalidate"] && el.type === "submit") {
-            bypassSubmit = true;
+        btnSubmit = el.type === "submit";
+        if(btnSubmit){
+            bypassSubmit = !!el.attributes["formnovalidate"];
         }
     };
 
@@ -277,10 +295,13 @@
     
     /* Util methods */
     listen = function (node,type,fn,capture) {
-        if(isHostMethod(window,"addEventListener")) {
+        if(node.addEventListener) {
             /* FF & Other Browsers */
             node.addEventListener( type, fn, capture );
-        } else if(isHostMethod(window,"attachEvent") && typeof window.event !== "undefined") {
+        } else if ($) {
+            /* Internet Explorer priority use jQuery way */
+            $(node).bind(type, fn);
+        } else if(node.attachEvent) {
             /* Internet Explorer way */
             if(type === "blur") {
                 type = "focusout";
@@ -291,21 +312,29 @@
         }
     };
     unlisten = function (node,type,fn,capture) {
-        if(isHostMethod(window,"removeEventListener")) {
+        if(node.removeEventListener) {
             /* FF & Other Browsers */
             node.removeEventListener( type, fn, capture );
-        } else if(isHostMethod(window,"detachEvent") && typeof window.event !== "undefined") {
+        } else if ($) {
+            /* Internet Explorer priority use jQuery way */
+            $(node).unbind(type, fn);
+        } else if(node.detachEvent) {
             /* Internet Explorer way */
             node.detachEvent( "on" + type, fn );
         }
     };
     preventActions = function (evt) {
-        evt = evt || window.event;
-        
-        if(evt.stopPropagation && evt.preventDefault) {
-            evt.stopPropagation();
-            evt.preventDefault();
-        } else {
+        /* FF & Other Browsers & jQuery */
+        if(evt && evt.preventDefault){
+            try {
+                evt.preventDefault();
+                //Sometimes jQuery will throw a error in IE, "evt.stopPropagation is undefined"
+                (evt.stopImmediatePropagation || evt.stopPropagation)();
+                return;
+            } catch(e){}
+        }
+        /* Internet Explorer way */
+        if( evt = window.event ) {
             evt.cancelBubble = true;
             evt.returnValue = false;
         }
@@ -314,27 +343,19 @@
         evt = evt || window.event;
         return evt.target || evt.srcElement;
     };
+    hasClass = function (e,c) {
+        return new RegExp('(^|\\s)' + c + '(\\s|$)').test(e.className);
+    };
     addClass = function (e,c) {
-        var re;
-        if (!e.className) {
-            e.className = c;
-        }
-        else {
-            re = new RegExp('(^|\\s)' + c + '(\\s|$)');
-            if (!re.test(e.className)) { e.className += ' ' + c; }
+        if(c && !hasClass(e,c)){
+            e.className += ' ' + c;
         }
     };
     removeClass = function (e,c) {
-        var re, m, arr = (typeof c === "object") ? c.length : 1, len = arr;
-        if (e.className) {
-            if (e.className === c) {
-                e.className = '';
-            } else {
-                while(arr--) {
-                    re = new RegExp('(^|\\s)' + ((len > 1) ? c[arr] : c) + '(\\s|$)');
-                    m = e.className.match(re);
-                    if (m && m.length === 3) { e.className = e.className.replace(re, (m[1] && m[2])?' ':''); }
-                }
+        c = (typeof c === "object") ? c : [c];
+        for(var i = 0; i < c.length; i++){
+            while(c[i] && hasClass(e,c[i])){
+                e.className = e.className.replace(new RegExp('(^|\\s+)' + c[i] + '(\\s+|$)'), ' ');
             }
         }
     };
@@ -344,7 +365,7 @@
     };
     /* Checking if one of the radio siblings is checked */
     isSiblingChecked = function(el) {
-        var siblings = document.getElementsByName(el.name);
+        var siblings = d.getElementsByName(el.name);
         for(var i=0; i<siblings.length; i++){
             if(siblings[i].checked){
                 return true;
