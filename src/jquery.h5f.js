@@ -35,7 +35,7 @@
 	
 			opt.validClass && node.toggleClass(opt.validClass, v.valid);
 			opt.invalidClass && node.toggleClass(opt.invalidClass, (!v.valueMissing && !v.valid));
-			opt.requiredClass &&　node.toggleClass(opt.requiredClass, v.valueMissing);
+			opt.requiredClass && node.toggleClass(opt.requiredClass, v.valueMissing);
 			opt.placeholderClass && node.toggleClass(opt.placeholderClass, (!node.val() && node.placeholder));
 		}
 	}
