@@ -352,8 +352,11 @@
         }
     };
     removeClass = function (e,c) {
-        while(c && hasClass(e,c)){
-            e.className = e.className.replace(new RegExp('(^|\\s+)' + c + '(\\s+|$)'), ' ');
+        c = (typeof c === "object") ? c : [c];
+        for(var i = 0; i < c.length; i++){
+            while(c[i] && hasClass(e,c[i])){
+                e.className = e.className.replace(new RegExp('(^|\\s+)' + c[i] + '(\\s+|$)'), ' ');
+            }
         }
     };
     isHostMethod = function(o, m) {

@@ -7,23 +7,12 @@
 	
 	<link rel="stylesheet" type="text/css" href="_styles.css" media="screen" />
 	
-	<script type="text/javascript" src="../src/H5F.js"></script>
+	<script src="http://code.jquery.com/jquery.js"></script>
+	<script src="../src/jquery.h5f.js" data-h5f="../src/H5F.js"></script>
 	<script type="text/javascript">
-		window.onload = function() {
-			/*
-				Accepts HTMLFormElement, HTMLCollection of HTMLFormElements, or Array of HTMLFormElements.
-				Optional object of options: validClass, invalidClass, requiredClass
-				
-				e.g. 
-				
-				H5F.setup([d.getElementById("signup"),d.getElementById("anotherform")], {
-					validClass: "valid",
-					invalidClass: "invalid",
-					requiredClass: "required"
-				});
-			*/
-			H5F.setup(document.getElementById("signup"));
-		}
+		$(function(){
+			$("form").h5f();
+		});
 	</script>
 	
 	<title>Validate those forms with CSS3 Basic UI module pseudo-classes, HTML5 Form attributes and consraint validation API</title>
