@@ -4,6 +4,7 @@
   "description": "a JavaScript library that allows you to use the HTML5 Forms chapters new field input types, attributes and constraint validation API in non-supporting browsers.",
   "version": "1.0.1",
   "homepage": "https://github.com/ryanseddon/H5F/",
+  "main": "src/H5F.js",
   "author": {
     "name": "Ryan Seddon",
     "url": "http://www.thecssninja.com"
