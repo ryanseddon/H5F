@@ -227,12 +227,17 @@
         var attrs = { placeholder: el.getAttribute("placeholder") },
             focus = /^(focus|focusin|submit)$/i,
             node = /^(input|textarea)$/i,
-            ignoredType = /^password$/i,
+            encryptedType = /^password$/i,
             isNative = !!("placeholder" in field);
         
-        if(!isNative && node.test(el.nodeName) && !ignoredType.test(el.type)) {
+        if(!isNative && node.test(el.nodeName)) {
             if(el.value === "" && !focus.test(curEvt)) {
                 el.value = attrs.placeholder;
+                // change type in password fields so that we can read
+                if(encryptedType.test(el.type)) {
+                  el.h5ftype = el.type;
+                  el.type = 'text';
+                }
                 listen(el.form,'submit', function () {
                   curEvt = 'submit';
                   placeholder(el);
@@ -240,6 +245,10 @@
                 addClass(el,args.placeholderClass);
             } else if(el.value === attrs.placeholder && focus.test(curEvt)) {
                 el.value = "";
+                // reset the password type
+                if(encryptedType.test(el.h5ftype)) {
+                  el.type = el.h5ftype;
+                }
                 removeClass(el,args.placeholderClass);
             }
         }
