@@ -6,7 +6,7 @@
     if (typeof define === 'function' && define.amd) {
         // AMD. Register as an anonymous module.
         define(factory);
-    } else if (typeof module == 'object' && module.exports)  {
+    } else if (typeof module === 'object' && module.exports)  {
         // CommonJS
         module.exports = factory();
     } else {
@@ -23,10 +23,10 @@
         isSubmit, bypassSubmit, usrPatt, curEvt, args,
         // Methods
         setup, validation, validity, checkField, bypassChecks, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod, isSiblingChecked;
-    
+
     setup = function(form, settings) {
         var isCollection = !form.nodeType || false;
-        
+
         var opts = {
             validClass : "valid",
             invalidClass : "error",
@@ -41,9 +41,9 @@
                 if(typeof settings[i] === "undefined") { settings[i] = opts[i]; }
             }
         }
-        
+
         args = settings || opts;
-        
+
         if(isCollection) {
             for(var k=0,len=form.length;k<len;k++) {
                 validation(form[k]);
@@ -52,13 +52,13 @@
             validation(form);
         }
     };
-    
+
     validation = function(form) {
         var f = form.elements,
             flen = f.length,
             isRequired,
             noValidate = !!(form.attributes["novalidate"]);
-        
+
         listen(form,"invalid",checkField,true);
         listen(form,"blur",checkField,true);
         listen(form,"input",checkField,true);
@@ -66,7 +66,7 @@
         listen(form,"focus",checkField,true);
         listen(form,"change",checkField,true);
         listen(form,"click",bypassChecks,true);
-        
+
         listen(form,"submit",function(e){
             isSubmit = true;
             if(!bypassSubmit && !noValidate && !form.checkValidity()) {
@@ -75,10 +75,10 @@
             }
             args.onSubmit.call(form, e);
         },false);
-        
+
         if(!support()) {
             form.checkValidity = function() { return checkValidity(form); };
-            
+
             while(flen--) {
                 isRequired = !!(f[flen].attributes["required"]);
                 // Firefox includes fieldsets inside elements nodelist so we filter it out.
@@ -104,10 +104,10 @@
             min = range(elem,"min"),
             max = range(elem,"max"),
             customError = !( elem.validationMessage === "" || elem.validationMessage === undefined );
-        
+
         elem.checkValidity = function() { return checkValidity.call(this,elem); };
         elem.setCustomValidity = function(msg) { setCustomValidity.call(elem,msg); };
-        
+
         elem.validity = {
             valueMissing: missing,
             patternMismatch: patt,
@@ -117,7 +117,7 @@
             customError: customError,
             valid: (!missing && !patt && !step && !min && !max && !customError)
         };
-        
+
         if(attrs.placeholder && !evt.test(curEvt)) { placeholder(elem); }
     };
     checkField = function(e) {
@@ -126,7 +126,7 @@
             ignoredTypes = /^(submit|image|button|reset)$/i,
             specialTypes = /^(checkbox|radio)$/i,
             checkForm = true;
-        
+
         if(nodes.test(el.nodeName) && !(ignoredTypes.test(el.type) || ignoredTypes.test(el.nodeName))) {
             curEvt = e.type;
 
@@ -157,17 +157,17 @@
     };
     checkValidity = function(el) {
         var f, ff, isDisabled, isRequired, hasPattern, invalid = false;
-        
+
         if(el.nodeName.toLowerCase() === "form") {
             f = el.elements;
-            
+
             for(var i = 0,len = f.length;i < len;i++) {
                 ff = f[i];
-                
+
                 isDisabled = !!(ff.attributes["disabled"]);
                 isRequired = !!(ff.attributes["required"]);
                 hasPattern = !!(ff.attributes["pattern"]);
-                
+
                 if(ff.nodeName.toLowerCase() !== "fieldset" && !isDisabled && (isRequired || hasPattern && isRequired)) {
                     checkField(ff);
                     if(!ff.validity.valid && !invalid) {
@@ -187,10 +187,10 @@
     };
     setCustomValidity = function(msg) {
         var el = this;
-            
+
         el.validationMessage = msg;
     };
-    
+
     bypassChecks = function(e) {
         // handle formnovalidate attribute
         var el = getTarget(e);
@@ -215,9 +215,9 @@
         } else {
             var placeholder = el.getAttribute("placeholder"),
                 val = el.value;
-            
+
             usrPatt = new RegExp('^(?:' + type + ')$');
-            
+
             if(val === placeholder) {
                 return false;
             } else if(val === "") {
@@ -233,7 +233,7 @@
             node = /^(input|textarea)$/i,
             ignoredType = /^password$/i,
             isNative = !!("placeholder" in field);
-        
+
         if(!isNative && node.test(el.nodeName) && !ignoredType.test(el.type)) {
             if(el.value === "" && !focus.test(curEvt)) {
                 el.value = attrs.placeholder;
@@ -255,7 +255,7 @@
             step = parseInt(el.getAttribute("step"),10) || 1,
             val = parseInt(el.value,10),
             mismatch = (val-min)%step;
-        
+
         if(!valueMissing(el) && !isNaN(val)) {
             if(type === "step") {
                 return (el.getAttribute("step")) ? (mismatch !== 0) : false;
@@ -272,7 +272,7 @@
     };
     required = function(el) {
         var required = !!(el.attributes["required"]);
-        
+
         return (required) ? valueMissing(el) : false;
     };
     valueMissing = function(el) {
@@ -281,7 +281,7 @@
             isRequired = !!(el.attributes["required"]);
         return !!(isRequired && (el.value === "" || el.value === placeholder || (specialTypes.test(el.type) && !isSiblingChecked(el))));
     };
-    
+
     /* Util methods */
     listen = function (node,type,fn,capture) {
         if(isHostMethod(window,"addEventListener")) {
@@ -308,7 +308,7 @@
     };
     preventActions = function (evt) {
         evt = evt || window.event;
-        
+
         if(evt.stopPropagation && evt.preventDefault) {
             evt.stopPropagation();
             evt.preventDefault();

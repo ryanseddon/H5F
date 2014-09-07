@@ -67,10 +67,7 @@ module.exports = function(grunt) {
 
   // Sauce labs CI task
   grunt.registerTask("sauce", ["connect", "saucelabs-qunit"]);
-  
+
   // Travis CI task.
-  grunt.registerTask('travis', ['jshint', 'sauce']);
-
-  
-
+  grunt.registerTask('travis', ['default']);
 };
