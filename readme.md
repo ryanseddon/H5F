@@ -98,6 +98,20 @@ H5F.setup(document.getElementById("signup"), {
 	placeholderClass: "placeholder"
 });
 ```
+
+As well as form submit and invalid field event handlers, in case you need to hook custom functionality:
+
+```js
+H5F.setup(document.getElementById("signup"), {
+	onSubmit: function (event) {},
+	onInvalid: function (invalidInputElement) {}
+});
+```
+
+If you need to submit your form through AJAX, you must add your event handler using the `onSubmit` option, else, your handler will get called even if H5F invalidates the form. See **A word on AJAX form submission** under **Form submission blocking**.
+
+`onInvalid` lets you add a callback for invalid fields to help you showing or doing special things when fields invalidate.
+
 	
 #### Form submission blocking
 
@@ -124,6 +138,11 @@ You can also specify the `formnovalidate` attribute on a submittable element e.g
 	<input type="submit" value="Save" formnovalidate />
 </form>
 ```
+
+##### A word on AJAX form submission
+
+If you're going to submit your form through AJAX, you may be attaching a event handler to the form submit event. This handler will be called even if form is invalid for H5F. While we could avoid this using `Event.prototype.stopImmediatePropagation()` the reality is that older browsers don't implement it. So the workaround for this is that you add your event handlers using the provided `onSubmit` setup option.
+
 	
 [http://thecssninja.com/javascript/H5F](http://thecssninja.com/javascript/H5F)
 

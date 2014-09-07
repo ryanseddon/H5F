@@ -31,7 +31,9 @@
             validClass : "valid",
             invalidClass : "error",
             requiredClass : "required",
-            placeholderClass : "placeholder"
+            placeholderClass : "placeholder",
+            onSubmit : Function.prototype,
+            onInvalid : Function.prototype
         };
 
         if(typeof settings === "object") {
@@ -67,11 +69,11 @@
         
         listen(form,"submit",function(e){
             isSubmit = true;
-            if(!bypassSubmit) {
-                if(!noValidate && !form.checkValidity()) {
-                    preventActions(e);
-                }
+            if(!bypassSubmit && !noValidate && !form.checkValidity()) {
+                preventActions(e);
+                return;
             }
+            args.onSubmit.call(form, e);
         },false);
         
         if(!support()) {
@@ -154,7 +156,7 @@
         }
     };
     checkValidity = function(el) {
-        var f, ff, isRequired, hasPattern, invalid = false;
+        var f, ff, isDisabled, isRequired, hasPattern, invalid = false;
         
         if(el.nodeName.toLowerCase() === "form") {
             f = el.elements;
@@ -162,16 +164,18 @@
             for(var i = 0,len = f.length;i < len;i++) {
                 ff = f[i];
                 
+                isDisabled = !!(ff.attributes["disabled"]);
                 isRequired = !!(ff.attributes["required"]);
                 hasPattern = !!(ff.attributes["pattern"]);
                 
-                if(ff.nodeName.toLowerCase() !== "fieldset" && (isRequired || hasPattern && isRequired)) {
+                if(ff.nodeName.toLowerCase() !== "fieldset" && !isDisabled && (isRequired || hasPattern && isRequired)) {
                     checkField(ff);
                     if(!ff.validity.valid && !invalid) {
                         if(isSubmit) { // If it's not a submit event the field shouldn't be focused
                             ff.focus();
                         }
                         invalid = true;
+                        args.onInvalid.call(el, ff);
                     }
                 }
             }
