@@ -20,10 +20,22 @@
         emailPatt = /^[a-zA-Z0-9.!#$%&'*+-\/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
         urlPatt = /[a-z][\-\.+a-z]*:\/\//i,
         nodes = /^(input|select|textarea)$/i,
-        isSubmit, bypassSubmit, usrPatt, curEvt, args,
+        isSubmit, bypassSubmit, usrPatt, curEvt, args, ieVersion,
         // Methods
         setup, validation, validity, checkField, bypassChecks, checkValidity, setCustomValidity, support, pattern, placeholder, range, required, valueMissing, listen, unlisten, preventActions, getTarget, addClass, removeClass, isHostMethod, isSiblingChecked;
-    
+
+    ieVersion = (function() {
+        var v = 3,
+            div = document.createElement('div'),
+            all = div.getElementsByTagName('i');
+
+        do {
+            div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->';
+        } while (all[0]);
+
+        return v > 4 ? v : document.documentMode;
+    })();
+
     setup = function(form, settings) {
         var isCollection = !form.nodeType || false;
         
@@ -55,11 +67,14 @@
         var f = form.elements,
             flen = f.length,
             isRequired,
-            noValidate = !!(form.attributes["novalidate"]);
-        
+            noValidate = !!(form.attributes["novalidate"]),
+            deferredCheckField = function(e) { setTimeout(function() { checkField(e); }, 0) };
+
         listen(form,"invalid",checkField,true);
         listen(form,"blur",checkField,true);
-        listen(form,"input",checkField,true);
+        if (ieVersion !== 9) listen(form,"input",checkField,true);
+        listen(form,"cut",deferredCheckField,true);
+        listen(form,"paste",deferredCheckField,true);
         listen(form,"keyup",checkField,true);
         listen(form,"focus",checkField,true);
         listen(form,"change",checkField,true);
@@ -231,7 +246,7 @@
             isNative = !!("placeholder" in field);
         
         if(!isNative && node.test(el.nodeName) && !ignoredType.test(el.type)) {
-            if(el.value === "" && !focus.test(curEvt)) {
+            if(el.value === "" && !focus.test(curEvt) && el !== d.activeElement) {
                 el.value = attrs.placeholder;
                 listen(el.form,'submit', function () {
                   curEvt = 'submit';
