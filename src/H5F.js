@@ -17,7 +17,9 @@
 
     var d = document,
         field = d.createElement("input"),
-        emailPatt = /^[a-zA-Z0-9.!#$%&'*+-\/=?\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+        singleEmailString = "[a-zA-Z0-9.!#$%&'*+-\\/=?\\^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*",
+        emailPatt = new RegExp("^"+singleEmailString+"$"),
+        multipleEmailPatt = new RegExp("(?:(?:^|,)\\s*"+singleEmailString+")+$"),
         urlPatt = /[a-z][\-\.+a-z]*:\/\//i,
         nodes = /^(input|select|textarea)$/i,
         isSubmit, bypassSubmit, usrPatt, curEvt, args,
@@ -207,7 +209,11 @@
     // Create helper methods to emulate attributes in older browsers
     pattern = function(el, type) {
         if(type === "email") {
-            return !emailPatt.test(el.value);
+            if (el.hasAttribute('multiple')){
+                return !multipleEmailPatt.test(el.value);
+            } else {
+                return !emailPatt.test(el.value);
+            }
         } else if(type === "url") {
             return !urlPatt.test(el.value);
         } else if(!type) {
