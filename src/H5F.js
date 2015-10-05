@@ -98,7 +98,7 @@
             },
             isType = /^(email|url)$/i,
             evt = /^(input|keyup)$/i,
-            fType = ((isType.test(attrs.type)) ? attrs.type : ((attrs.pattern) ? attrs.pattern : false)),
+            fType = ((attrs.pattern) ? attrs.pattern : ((isType.test(attrs.type)) ? attrs.type : false)),
             patt = pattern(elem,fType),
             step = range(elem,"step"),
             min = range(elem,"min"),
