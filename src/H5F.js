@@ -351,7 +351,9 @@
     };
     /* Checking if one of the radio siblings is checked */
     isSiblingChecked = function(el) {
-        var siblings = document.getElementsByName(el.name);
+        var siblings;
+        if(!el.name) { return el.checked; }
+        siblings = document.getElementsByName(el.name);
         for(var i=0; i<siblings.length; i++){
             if(siblings[i].checked){
                 return true;
