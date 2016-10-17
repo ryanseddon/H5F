@@ -1,6 +1,12 @@
 H5F [![Build Status](https://secure.travis-ci.org/ryanseddon/H5F.png?branch=master)](http://travis-ci.org/ryanseddon/H5F)
 ===
 
+### Deprecated 
+
+This hasn't been maintained in quite a while and recently a much better library has been released, [hyperforms](https://hyperform.js.org/)! I highly recommend you use that.
+
+===
+
 ### a JavaScript library that allows you to use the HTML5 Forms chapters new field input types, attributes and constraint validation API in non-supporting browsers.
 
 The H5F script will detect if the browser has support for the HTML5 Forms Chapter and either hook into the native methods, attributes and events or emulate the new features in non-supporting browsers.
